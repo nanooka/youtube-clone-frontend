@@ -1,6 +1,6 @@
 "use client";
 
-import Header from "@/app/components/Header";
+// import Header from "@/app/components/Header";
 import { Roboto } from "next/font/google";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -18,19 +18,26 @@ export interface Video {
   snippet: {
     title: string;
     channelTitle: string;
+    channelId: string;
     description: string;
     publishTime: string;
     thumbnails: { medium: { height: number; url: string; width: number } };
   };
 }
 
-export default function Home() {
-  const [searchResults, setSearchResults] = useState<Video[]>([]);
+interface HomeProps {
+  searchResults: Video[];
+}
+
+export default function Home({ searchResults }: HomeProps) {
+  // const [searchResults, setSearchResults] = useState<Video[]>([]);
   const router = useRouter();
 
-  const handleSearchResults = (results: Video[]) => {
-    setSearchResults(results);
-  };
+  console.log("index", searchResults);
+
+  // const handleSearchResults = (results: Video[]) => {
+  //   setSearchResults(results);
+  // };
 
   const handleVideoClick = (video: Video) => {
     router.push({
@@ -38,11 +45,11 @@ export default function Home() {
     });
   };
 
-  console.log(searchResults);
+  // console.log(searchResults);
 
   return (
     <div className={roboto.className}>
-      <Header onSearchResults={handleSearchResults} />
+      {/* <Header onSearchResults={handleSearchResults} /> */}
       <ul
         style={{
           listStyleType: "none",
