@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ChannelInfo } from "../watch/[v]";
+import { ChannelInfo } from "@/app/types/types";
 
 export default function ChannelPage() {
   const apiKey = "AIzaSyCB_jwO0CDx7oIHM3wUXTlU0zwiJOh12x8";

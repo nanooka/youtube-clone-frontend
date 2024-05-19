@@ -4,27 +4,14 @@ import axios from "axios";
 import ReactPlayer from "react-player";
 import Image from "next/image";
 import { Roboto } from "next/font/google";
-import { Video } from "..";
 import { formatSubscriberCount } from "@/app/formulas/formatSubscriberCount";
 import Link from "next/link";
+import { ChannelInfo, Video } from "@/app/types/types";
 
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
 });
-
-export interface ChannelInfo {
-  snippet: {
-    customUrl: string;
-    thumbnails: { medium: { height: number; url: string; width: number } };
-  };
-  statistics: {
-    subscriberCount: string;
-    videoCount: string;
-    viewCount: string;
-  };
-  // ...
-}
 
 export default function WatchPage() {
   const router = useRouter();
@@ -45,7 +32,7 @@ export default function WatchPage() {
   const hydrate = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/videos/${v}?${apiKey}&part="snippet"`
+        `http://localhost:3000/api/youtube/videos/${v}?${apiKey}&part="snippet,statistics,player,contentDetails"`
       );
       setVideoInfo(response.data.items[0]);
     } catch (error) {
@@ -59,7 +46,7 @@ export default function WatchPage() {
   const fetchChannel = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/channels/${channelId}?${apiKey}&part="snippet,id,statistics"`
+        `http://localhost:3000/api/youtube/channels/${channelId}?${apiKey}&part="snippet,id,statistics,player,contentDetails"`
       );
       // console.log("response", response.data.items[0]);
       setChannelInfo(response.data.items[0]);
@@ -98,6 +85,23 @@ export default function WatchPage() {
     });
   };
 
+  // const createEmbedHtml = (html: string) => {
+  //   // Create a temporary element to parse the HTML
+  //   const div = document.createElement("div");
+  //   div.innerHTML = html;
+
+  //   // Find the iframe element
+  //   const iframe = div.querySelector("iframe");
+
+  //   // Apply custom styles if iframe exists
+  //   if (iframe) {
+  //     iframe.style.width = "70%";
+  //     iframe.style.height = "400px";
+  //   }
+
+  //   return div.innerHTML;
+  // };
+
   return (
     <div className={roboto.className}>
       <div className="container">
@@ -106,23 +110,24 @@ export default function WatchPage() {
         {videoInfo && channelInfo ? (
           <div>
             <div
-              style={{
-                display: "inline-block",
-                borderRadius: "10px",
-                overflow: "hidden",
-                width: "70%",
-                height: "70vh",
+              dangerouslySetInnerHTML={{
+                __html: videoInfo.player.embedHtml || "",
               }}
-            >
-              <ReactPlayer
-                url={`https://www.youtube.com/watch?v=${v}`}
-                controls
-                // width={900}
-                // height={500}
-                width={"100%"}
-                height={"100%"}
-              />
-            </div>
+              style={{ width: "100%", backgroundColor: "red" }}
+            ></div>
+
+            {/* <iframe
+              width="70%"
+              height="390"
+              src="https://www.youtube.com/embed/YQHsXMglC9A?rel=0&modestbranding=1&showinfo=0&iv_load_policy=3"
+            ></iframe> */}
+
+            {/* <div
+              className="video-container"
+              dangerouslySetInnerHTML={{
+                __html: createEmbedHtml(videoInfo.player.embedHtml || ""),
+              }}
+            ></div> */}
             <h2>{videoInfo.snippet.title}</h2>
             <div>
               <div

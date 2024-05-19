@@ -154,7 +154,8 @@
 
 import React, { useState } from "react";
 import axios from "axios";
-import { Video } from "@/pages";
+import { Video } from "../types/types";
+// import { Video } from "@/pages";
 
 interface Props {
   onSearchResults: (results: Video[]) => void;
@@ -171,7 +172,6 @@ export default function SearchBar({ onSearchResults }: Props) {
         )}`
       );
       onSearchResults(response.data.items);
-      // console.log(onSearchResults);
     } catch (error) {
       console.error("Error searching YouTube:", error);
     }

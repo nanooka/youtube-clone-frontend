@@ -91,7 +91,7 @@ import Image from "next/image";
 
 import React from "react";
 import SearchBar from "./SearchBar";
-import { Video } from "@/pages";
+import { Video } from "../types/types";
 
 interface Props {
   onSearchResults: (results: Video[]) => void;
@@ -116,10 +116,17 @@ export default function Header({ onSearchResults }: Props) {
 
       <style jsx>{`
         header {
-          padding-right: 10px;
+          padding: 10px 0;
+          // padding-right: 10px;
+          // padding-bottom: 10px;
           display: flex;
           align-items: start;
           justify-content: space-between;
+          background-color: white;
+          position: fixed;
+          top: 0;
+          z-index: 1;
+          width: 100%;
         }
         .section-div {
           border-radius: 50%;
@@ -148,6 +155,7 @@ export default function Header({ onSearchResults }: Props) {
           cursor: pointer;
           background-color: transparent;
           // width: 220px;
+          margin-right: 20px;
         }
         .sign-in:hover {
           background-color: #def1ff;
