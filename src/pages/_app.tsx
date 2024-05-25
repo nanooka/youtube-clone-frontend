@@ -5,46 +5,21 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { Video } from "@/app/types/types";
+import SideBar from "@/app/components/SideBar";
 
-// export interface Video {
-//   id: {
-//     videoId: string;
-//   };
-//   snippet: {
-//     title: string;
-//     channelTitle: string;
-//     channelId: string;
-//     description: string;
-//     publishedAt: string;
-//     thumbnails: {
-//       default: { height: number; url: string; width: number };
-//       high: { height: number; url: string; width: number };
-//       medium: { height: number; url: string; width: number };
-//     };
-//   };
-//   statistics: {
-//     commentCount: string;
-//     favoriteCount: string;
-//     likeCount: string;
-//     viewCount: string;
-//   };
-//   player: {
-//     embedHtml: string;
-//   };
-//   contentDetails: {
-//     caption: string;
-//     licensedContent: boolean;
-//   };
-// }
+import { Roboto } from "next/font/google";
 
-// export interface ExtendedVideo extends Video {
-//   channelImageUrl?: string;
-// }
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [searchResults, setSearchResults] = useState<Video[]>([]);
   const apiKey = "AIzaSyCB_jwO0CDx7oIHM3wUXTlU0zwiJOh12x8";
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleSearchResults = async (results: Video[]) => {
     const updatedResults = await Promise.all(
@@ -99,11 +74,19 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   // console.log("_app", searchResults);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <>
-      <Header onSearchResults={handleSearchResults} />
+    <div className={roboto.className}>
+      <Header
+        onSearchResults={handleSearchResults}
+        toggleSidebar={toggleSidebar}
+      />
+      <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <Component {...pageProps} searchResults={searchResults} />
-    </>
+    </div>
   );
 }
 

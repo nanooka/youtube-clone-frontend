@@ -1,7 +1,5 @@
 "use client";
 
-// import Header from "@/app/components/Header";
-import { Roboto } from "next/font/google";
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -9,11 +7,7 @@ import { formatViewCount } from "@/app/formulas/formatViewCount";
 import { dateCalculation } from "@/app/formulas/dateCalculation";
 import { ExtendedVideo } from "@/app/types/types";
 import { convertDuration } from "@/app/formulas/formatDuration";
-
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
+import Link from "next/link";
 
 interface HomeProps {
   // searchResults: Video[];
@@ -26,16 +20,6 @@ export default function Home({ searchResults }: HomeProps) {
 
   console.log("index", searchResults);
 
-  // const handleSearchResults = (results: Video[]) => {
-  //   setSearchResults(results);
-  // };
-
-  // const handleVideoClick = (video: Video) => {
-  //   router.push({
-  //     pathname: `/watch/${video.id.videoId}`,
-  //   });
-  // };
-
   const handleVideoClick = (video: ExtendedVideo) => {
     console.log("video", video);
     router.push({
@@ -46,7 +30,7 @@ export default function Home({ searchResults }: HomeProps) {
   // console.log(searchResults);
 
   return (
-    <div className={roboto.className} style={{ marginTop: "100px" }}>
+    <div style={{ marginTop: "120px", marginLeft: "200px" }}>
       {/* <Header onSearchResults={handleSearchResults} /> */}
       <ul
         style={{
@@ -60,31 +44,42 @@ export default function Home({ searchResults }: HomeProps) {
             <li
               key={video.id.videoId}
               style={{
-                display: "flex",
+                // display: "flex",
                 // flexDirection: "column",
                 // alignItems: "start",
                 // textAlign: "start",
                 marginBottom: "20px",
+                width: "90%",
+                // cursor: "pointer",
               }}
             >
               <div
+                className="video-container"
                 style={{
-                  display: "flex",
+                  // display: "flex",
                   // justifyContent: "center",
+                  display: "grid",
+                  gridTemplateColumns: "480px 1fr",
                   alignItems: "flex-start",
-                  gap: "14px",
+                  // gap: "14px",
+                  gap: "24px",
+                  // position: "relative",
                 }}
               >
                 <button
                   onClick={() => handleVideoClick(video)}
                   style={{
                     border: "none",
-                    backgroundColor: "transparent",
+                    // backgroundColor: "transparent",
                     cursor: "pointer",
                     display: "flex",
-                    flexDirection: "column",
-                    textAlign: "start",
+                    justifyContent: "center",
+                    // flexDirection: "column",
+                    // textAlign: "start",
                     position: "relative",
+                    // backgroundColor: "red",
+                    // borderRadius: "12px",
+                    overflow: "hidden",
                   }}
                 >
                   <Image
@@ -94,7 +89,8 @@ export default function Home({ searchResults }: HomeProps) {
                     // height={video.snippet.thumbnails.medium.height}
                     width={480}
                     height={270}
-                    style={{ borderRadius: "12px" }}
+                    className="video-image"
+                    // style={{ borderRadius: "12px" }}
                   />
                   <span
                     style={{
@@ -112,14 +108,33 @@ export default function Home({ searchResults }: HomeProps) {
                     {convertDuration(video.contentDetails.duration)}
                   </span>
                 </button>
-                <div style={{ marginTop: "-16px" }}>
-                  <h3 style={{ fontWeight: "400" }}>{video.snippet.title}</h3>
+                <div
+                  style={{ marginTop: "-16px", position: "relative" }}
+                  className="video-info"
+                >
+                  <h3
+                    style={{
+                      fontWeight: "400",
+                      cursor: "pointer",
+                      width: "100%",
+                      // backgroundColor: "red",
+                    }}
+                    onClick={() => handleVideoClick(video)}
+                  >
+                    {video.snippet.title}
+                  </h3>
                   <div
                     style={{
                       color: "#676767",
                       fontSize: "13px",
                       display: "flex",
+                      marginTop: "-14px",
+                      marginBottom: "15px",
+                      cursor: "pointer",
+                      width: "100%",
+                      // backgroundColor: "red",
                     }}
+                    onClick={() => handleVideoClick(video)}
                   >
                     <span>{formatViewCount(video.statistics.viewCount)}</span>
                     <svg
@@ -134,7 +149,13 @@ export default function Home({ searchResults }: HomeProps) {
                     </svg>
                     <span>{dateCalculation(video.snippet.publishedAt)}</span>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "12px",
+                    }}
+                  >
                     <Image
                       src={
                         video.channelImageUrl || "/default-channel-image.png"
@@ -144,36 +165,79 @@ export default function Home({ searchResults }: HomeProps) {
                       height={26}
                       style={{ borderRadius: "50%" }}
                     />
-                    <p
+                    <Link
+                      href={`/channel/${video.snippet.channelId}`}
                       style={{
                         marginLeft: "10px",
                         color: "#606060",
                         fontSize: "12px",
+                        textDecoration: "none",
                       }}
                     >
                       {video.snippet.channelTitle}
-                    </p>
+                    </Link>
                   </div>
                   {video.contentDetails.caption == "true" ? (
-                    <span
+                    <div
                       style={{
-                        backgroundColor: "#f2f2f2",
-                        color: "#606060",
-                        padding: "0 4px",
-                        borderRadius: "2px",
-                        fontSize: "12px",
-                        fontWeight: "500",
+                        cursor: "pointer",
+                        width: "100%",
+                        // backgroundColor: "red",
                       }}
+                      onClick={() => handleVideoClick(video)}
                     >
-                      CC
-                    </span>
+                      <span
+                        style={{
+                          backgroundColor: "#f2f2f2",
+                          color: "#606060",
+                          padding: "0 4px",
+                          borderRadius: "2px",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        CC
+                      </span>
+                    </div>
                   ) : null}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    fill="rgba(0,0,0,0.8)"
+                    className="bi bi-three-dots-vertical dots"
+                    viewBox="0 0 16 16"
+                    style={{
+                      position: "absolute",
+                      right: 0,
+                      top: "24px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                  </svg>
                 </div>
               </div>
               {/* <div>{video.player.embedHtml}</div> */}
             </li>
           ))}
       </ul>
+
+      <style jsx>{`
+        .video-container button {
+          border-radius: 12px;
+        }
+        .video-container:hover button {
+          border-radius: 0;
+          transition: 0.3s;
+        }
+        .video-info .dots {
+          display: none;
+        }
+        .video-info:hover .dots {
+          display: block;
+        }
+      `}</style>
     </div>
   );
 }
