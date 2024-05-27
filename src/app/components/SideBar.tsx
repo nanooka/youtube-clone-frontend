@@ -29,11 +29,11 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
     <>
       <div
         className={`sidebar ${isOpen ? "open" : ""}`}
-        style={{
-          boxShadow: `${
-            isOpen ? "100px 100px 100px 10000px rgba(0, 0, 0, 0.6)" : ""
-          }`,
-        }}
+        // style={{
+        //   boxShadow: `${
+        //     isOpen ? "100px 100px 100px 10000px rgba(0, 0, 0, 0.6)" : ""
+        //   }`,
+        // }}
       >
         <nav>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -54,7 +54,7 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
             </div>
           </div>
           <ul>
-            <li>
+            <li key="home">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 48 48"
@@ -65,7 +65,7 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
               </svg>
               <span>Home</span>
             </li>
-            <li>
+            <li key="shorts">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -76,7 +76,7 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
               </svg>
               <span>Shorts</span>
             </li>
-            <li>
+            <li key="subscriptions">
               <MdOutlineSubscriptions
                 style={{ width: "21px", height: "21px" }}
               />
@@ -93,13 +93,16 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
             }}
           ></hr>
           <ul style={{ marginTop: 0 }}>
-            <li style={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <li
+              style={{ display: "flex", gap: 2, alignItems: "center" }}
+              key="you"
+            >
               <span style={{ fontSize: "15px", fontWeight: "600" }}>You</span>
               <MdOutlineKeyboardArrowRight
                 style={{ width: "24px", height: "24px", opacity: 0.5 }}
               />
             </li>
-            <li>
+            <li key="your-channel">
               <div
                 style={{
                   // width: "21px",
@@ -119,23 +122,23 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
               </div>
               <span>Your channel</span>
             </li>
-            <li>
+            <li key="history">
               <VscHistory style={{ width: "21px", height: "21px" }} />
               <span>History</span>
             </li>
-            <li>
+            <li key="playlists">
               <MdPlaylistPlay style={{ width: "21px", height: "21px" }} />
               <span>Playlists</span>
             </li>
-            <li>
+            <li key="your-videos">
               <CiYoutube style={{ width: "21px", height: "21px" }} />
               <span>Your videos</span>
             </li>
-            <li>
+            <li key="watch-later">
               <SlClock style={{ width: "21px", height: "21px" }} />
               <span>Watch later</span>
             </li>
-            <li>
+            <li key="liked-videos">
               <AiOutlineLike style={{ width: "21px", height: "21px" }} />
               <span>Liked videos</span>
             </li>

@@ -46,3 +46,40 @@ export interface ChannelInfo {
   };
   // ...
 }
+
+export interface CommentSnippet {
+  authorDisplayName: string;
+  authorProfileImageUrl: string;
+  textDisplay: string;
+  likeCount: number;
+  publishedAt: string;
+}
+
+export interface TopLevelComment {
+  id: string;
+  snippet: CommentSnippet;
+}
+
+export interface CommentThreadSnippet {
+  videoId: string;
+  topLevelComment: TopLevelComment;
+  totalReplyCount: number;
+  canReply: boolean;
+  isPublic: boolean;
+}
+
+export interface CommentThread {
+  id: string;
+  snippet: CommentThreadSnippet;
+}
+
+export interface CommentsResponse {
+  kind: string;
+  etag: string;
+  nextPageToken?: string;
+  items: CommentThread[];
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
+  };
+}

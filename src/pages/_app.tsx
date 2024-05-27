@@ -85,7 +85,29 @@ function MyApp({ Component, pageProps }: AppProps) {
         toggleSidebar={toggleSidebar}
       />
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <Component {...pageProps} searchResults={searchResults} />
+      <div
+        className={`main-container ${
+          isSidebarOpen ? "sidebar-open" : "sidebar-closed"
+        }`}
+      >
+        <Component {...pageProps} searchResults={searchResults} />
+      </div>
+      <style jsx>{`
+        // .main-container {
+        //   transition: margin-left 0.3s ease-in-out;
+        // }
+
+        body {
+          font-family: "Roboto", sans-serif;
+        }
+        .main-container.sidebar-open {
+          margin-left: 100px; /* Adjust the value to match the width of your sidebar */
+        }
+
+        .main-container.sidebar-closed {
+          margin-left: 0;
+        }
+      `}</style>
     </div>
   );
 }

@@ -30,7 +30,7 @@ export default function Home({ searchResults }: HomeProps) {
   // console.log(searchResults);
 
   return (
-    <div style={{ marginTop: "120px", marginLeft: "200px" }}>
+    <div style={{ marginTop: "120px", marginLeft: "120px" }}>
       {/* <Header onSearchResults={handleSearchResults} /> */}
       <ul
         style={{

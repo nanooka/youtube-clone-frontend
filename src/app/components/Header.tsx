@@ -20,18 +20,18 @@ export default function Header({ onSearchResults, toggleSidebar }: Props) {
   return (
     <div>
       <div
-        className="list"
+        // className="list"
         style={{
           width: "50px",
           height: "100vh",
-          // backgroundColor: "red",
+          backgroundColor: "white",
           position: "fixed",
           top: "50px",
           // left: 0,
         }}
       >
         <ul>
-          <li>
+          <li key="home">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 48 48"
@@ -42,7 +42,7 @@ export default function Header({ onSearchResults, toggleSidebar }: Props) {
             </svg>
             <span>Home</span>
           </li>
-          <li>
+          <li key="shorts">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -53,11 +53,11 @@ export default function Header({ onSearchResults, toggleSidebar }: Props) {
             </svg>
             <span>Shorts</span>
           </li>
-          <li>
+          <li key="subscriptions">
             <MdOutlineSubscriptions style={{ width: "21px", height: "21px" }} />
             <span>Subscriptions</span>
           </li>
-          <li>
+          <li key="you">
             <Image src={YouIcon} alt="icon" />
             <span>You</span>
           </li>
