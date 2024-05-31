@@ -6,7 +6,12 @@ import Image from "next/image";
 // import { Roboto } from "next/font/google";
 import { formatSubscriberCount } from "@/app/formulas/formatSubscriberCount";
 import Link from "next/link";
-import { ChannelInfo, CommentThread, Video } from "@/app/types/types";
+import {
+  ChannelInfo,
+  CommentThread,
+  ExtendedVideo,
+  Video,
+} from "@/app/types/types";
 import { AiOutlineLike } from "react-icons/ai";
 import { BiDislike } from "react-icons/bi";
 import { formatLikeCount } from "@/app/formulas/formatLikeCount";
@@ -14,6 +19,8 @@ import { PiDotsThreeBold, PiShareFatLight } from "react-icons/pi";
 import { LiaDownloadSolid } from "react-icons/lia";
 import { formatViewCount } from "@/app/formulas/formatViewCount";
 import { dateCalculation } from "@/app/formulas/dateCalculation";
+import CommentSection from "@/app/components/CommentSection";
+import RelativeVideos from "@/app/components/RelativeVideos";
 
 // const roboto = Roboto({
 //   subsets: ["latin"],
@@ -37,7 +44,7 @@ function formatDescription(description: string): string {
   return formattedDescription.replace(/\n/g, "<br>");
 }
 
-function formatNumberWithCommas(number: number): string {
+export function formatNumberWithCommas(number: number): string {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
@@ -51,7 +58,12 @@ function formatDate(dateString: string): string {
   return date.toLocaleDateString("en-US", options);
 }
 
-export default function WatchPage() {
+interface watchProps {
+  // searchResults: Video[];
+  searchResults: ExtendedVideo[];
+}
+
+export default function WatchPage({ searchResults }: watchProps) {
   const router = useRouter();
   const { v } = router.query;
   const apiKey = "AIzaSyCB_jwO0CDx7oIHM3wUXTlU0zwiJOh12x8";
@@ -149,7 +161,7 @@ export default function WatchPage() {
 
     //   // Apply custom styles if iframe exists
     if (iframe) {
-      iframe.style.width = "60%";
+      iframe.style.width = "100%";
       iframe.style.height = "400px";
       iframe.style.borderRadius = "12px";
     }
@@ -187,12 +199,12 @@ export default function WatchPage() {
             }}
             // style={{ width: "100%", backgroundColor: "red" }}
           ></div>
-          <h2>{videoInfo.snippet.title}</h2>
+          <h2 style={{ fontSize: "20px" }}>{videoInfo.snippet.title}</h2>
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
-              maxWidth: "60%",
+              maxWidth: "100%",
               alignItems: "center",
             }}
           >
@@ -205,12 +217,14 @@ export default function WatchPage() {
                   height: "42px",
                 }}
               >
-                <Image
-                  src={channelInfo.snippet.thumbnails.medium.url}
-                  alt="channel"
-                  width={42}
-                  height={42}
-                />
+                <Link href={`/channel/${channelId}`}>
+                  <Image
+                    src={channelInfo.snippet.thumbnails.medium.url}
+                    alt="channel"
+                    width={42}
+                    height={42}
+                  />
+                </Link>
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <Link
@@ -260,7 +274,7 @@ export default function WatchPage() {
           <div
             style={{
               backgroundColor: "#f2f2f2",
-              maxWidth: "58%",
+              maxWidth: "100%",
               padding: "12px",
               borderRadius: "12px",
               marginTop: "14px",
@@ -303,39 +317,26 @@ export default function WatchPage() {
             </button>
           </div>
 
-          {comments.map((comment) => (
-            <div key={comment.id} className="comment">
-              <div className="comment-author">
-                <Image
-                  src={
-                    comment.snippet.topLevelComment.snippet
-                      .authorProfileImageUrl
-                  }
-                  alt="author"
-                  width={20}
-                  height={20}
-                />
-                <span>
-                  {comment.snippet.topLevelComment.snippet.authorDisplayName}
-                </span>
-              </div>
-              <p>{comment.snippet.topLevelComment.snippet.textDisplay}</p>
-              <div className="comment-actions">
-                <span className="like-count">
-                  {comment.snippet.topLevelComment.snippet.likeCount}
-                </span>
-              </div>
-            </div>
-          ))}
+          <CommentSection comments={comments} videoInfo={videoInfo} />
+
           {/* <button onClick={() => handleChannelClick(channelId)}>click</button> */}
         </div>
       ) : null}
+      <RelativeVideos
+        searchResults={searchResults}
+        videoId={v}
+        videoInfo={videoInfo}
+      />
 
       <style jsx>{`
         .container {
           // padding: 60px;
           margin-left: 130px;
           margin-top: 100px;
+          display: grid;
+          grid-template-columns: 65% 1fr;
+          gap: 10px;
+          padding-right: 50px;
         }
 
         .subscribe-btn {
@@ -346,6 +347,7 @@ export default function WatchPage() {
           border-radius: 20px;
           padding: 10px 14px;
           cursor: pointer;
+          margin-left: 10px;
         }
         .subscribe-btn:hover {
           opacity: 0.85;
@@ -392,33 +394,6 @@ export default function WatchPage() {
           display: flex;
           align-items: center;
           gap: 10px;
-        }
-
-        .comments-section {
-          margin-top: 20px;
-        }
-        .comment {
-          display: flex;
-          flex-direction: column;
-          margin-bottom: 20px;
-        }
-        .comment-author {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .comment-author img {
-          border-radius: 50%;
-        }
-        .comment-actions {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-        }
-        .like-count {
-          display: flex;
-          align-items: center;
-          gap: 5px;
         }
       `}</style>
     </div>

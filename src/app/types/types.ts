@@ -44,6 +44,14 @@ export interface ChannelInfo {
     videoCount: string;
     viewCount: string;
   };
+  brandingSettings: {
+    channel: {
+      defaultLanguage: string;
+      title: string;
+      unsubscribedTrailer: string;
+    };
+    image: { bannerExternalUrl: string };
+  };
   // ...
 }
 

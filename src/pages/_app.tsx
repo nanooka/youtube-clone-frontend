@@ -23,13 +23,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const handleSearchResults = async (results: Video[]) => {
     const updatedResults = await Promise.all(
-      // results.map(async (video) => {
-      //   const channelInfo = await fetchChannelInfo(video.snippet.channelId);
-      //   return {
-      //     ...video,
-      //     channelImageUrl: channelInfo?.snippet?.thumbnails?.default?.url || "",
-      //   };
-      // })
       results.map(async (video) => {
         const [channelInfo, videoInfo] = await Promise.all([
           fetchChannelInfo(video.snippet.channelId),

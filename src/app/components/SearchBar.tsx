@@ -25,7 +25,9 @@ export default function SearchBar({ onSearchResults }: Props) {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    hydrate();
+    if (searchQuery) {
+      hydrate();
+    }
   };
 
   return (
