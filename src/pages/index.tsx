@@ -149,10 +149,23 @@ export default function Home({ searchResults }: HomeProps) {
                     </svg>
                     <span>{dateCalculation(video.snippet.publishedAt)}</span>
                   </div>
-                  <div
+                  {/* <div
                     style={{
                       display: "flex",
                       alignItems: "center",
+                      marginBottom: "12px",
+                    }}
+                  > */}
+                  <Link
+                    href={`/channel/${video.snippet.channelId}`}
+                    style={{
+                      // marginLeft: "10px",
+                      color: "#606060",
+                      fontSize: "12px",
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
                       marginBottom: "12px",
                     }}
                   >
@@ -165,18 +178,10 @@ export default function Home({ searchResults }: HomeProps) {
                       height={26}
                       style={{ borderRadius: "50%" }}
                     />
-                    <Link
-                      href={`/channel/${video.snippet.channelId}`}
-                      style={{
-                        marginLeft: "10px",
-                        color: "#606060",
-                        fontSize: "12px",
-                        textDecoration: "none",
-                      }}
-                    >
-                      {video.snippet.channelTitle}
-                    </Link>
-                  </div>
+
+                    <span>{video.snippet.channelTitle}</span>
+                  </Link>
+                  {/* </div> */}
                   {video.contentDetails.caption == "true" ? (
                     <div
                       style={{
