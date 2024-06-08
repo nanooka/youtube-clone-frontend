@@ -10,6 +10,7 @@ import { IconContext } from "react-icons";
 import ChannelVideos from "@/app/components/ChannelVideos";
 import ChannelPlaylists from "@/app/components/ChannelPlaylists";
 import ChannelLiveVideos from "@/app/components/ChannelLiveVideos";
+import ChannelSearchedVideos from "@/app/components/ChannelSearchedVideos";
 
 export default function ChannelPage() {
   const apiUrl = "http://localhost:3000/api/youtube";
@@ -18,7 +19,9 @@ export default function ChannelPage() {
   const router = useRouter();
   const channelId = router.query.channel;
   const [channelInfo, setChannelInfo] = useState<ChannelInfo | null>(null);
-  const [channelVideos, setChannelVideos] = useState<Video[] | null>(null);
+  // const [channelVideos, setChannelVideos] = useState<Video[] | null>(null);
+  // const [searchResult, setSearchResult] = useState<Video | null>(null);
+  const [searched, setSearched] = useState(false);
 
   const [activeTab, setActiveTab] = useState<string>("Home");
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -63,23 +66,33 @@ export default function ChannelPage() {
   // };
 
   //
-  const handleSearch = async (e: React.FormEvent) => {
+  // const handleSearch = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await axios.get(
+  //       `${apiUrl}/channel-search?query=${searchQuery}&channelId=${channelId}`
+  //     );
+  //     // setSearchResult(response.data.items);
+  //     setSearched(true);
+  //     setActiveTab("");
+  //     // console.log("search  ", response.data.items);
+  //   } catch (error) {
+  //     console.error("Error fetching videos:", error);
+  //   }
+  // };
+  // console.log("search results", searchResult);
+
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await axios.get(
-        `${apiUrl}/channel-search?query=${searchQuery}&channelId=${channelId}`
-      );
-      console.log("search  ", response.data.items);
-    } catch (error) {
-      console.error("Error fetching videos:", error);
-    }
+    setSearched(true);
+    setActiveTab("");
   };
 
   useEffect(() => {
     const fetchChannel = async () => {
       try {
         const response = await axios.get(
-          `${apiUrl}/channels/${router.query.channel}?${apiKey}&part="snippet,id,statistics"`
+          `${apiUrl}/channels/${channelId}?${apiKey}&part="snippet,id,statistics"`
         );
         setChannelInfo(response.data.items[0]);
       } catch (error) {
@@ -88,7 +101,7 @@ export default function ChannelPage() {
     };
 
     fetchChannel();
-  }, [channelId, router.query.channel]);
+  }, [channelId]);
 
   const handleVideoClick = (video: Video) => {
     router.push({
@@ -200,7 +213,11 @@ export default function ChannelPage() {
             (tab) => (
               <span
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  setActiveTab(tab);
+                  // setSearchResult(null);
+                  setSearched(false);
+                }}
                 style={{
                   cursor: "pointer",
                   padding: "10px",
@@ -270,6 +287,15 @@ export default function ChannelPage() {
       ) : activeTab === "Live" ? (
         <ChannelLiveVideos
           channelId={channelId}
+          handleVideoClick={handleVideoClick}
+        />
+      ) : null}
+
+      {/* {searchResult ? <ChannelSearchedVideos /> : null} */}
+      {searched ? (
+        <ChannelSearchedVideos
+          channelId={channelId}
+          searchQuery={searchQuery}
           handleVideoClick={handleVideoClick}
         />
       ) : null}
