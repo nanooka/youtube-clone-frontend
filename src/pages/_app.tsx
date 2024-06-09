@@ -68,17 +68,34 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [loading]);
 
   // ........................................
+  // useEffect(() => {
+  //   const handleRouteChange = (
+  //     url: string,
+  //     { shallow }: { shallow: boolean }
+  //   ) => {
+  //     if (!shallow && router.asPath !== "/" && url === "/") {
+  //       setSearchResults([]);
+  //     }
+  //   };
+  //   // const handleRouteChange = (url: string) => {
+  //   //   if (router.pathname !== "/" && url === "/") {
+  //   //     setSearchResults([]);
+  //   //   }
+  //   // };
+
+  //   router.events.on("routeChangeComplete", handleRouteChange);
+
+  //   return () => {
+  //     router.events.off("routeChangeComplete", handleRouteChange);
+  //   };
+  // }, [router.asPath, router.events]);
+
   useEffect(() => {
-    // const handleRouteChange = (
-    //   url: string,
-    //   { shallow }: { shallow: boolean }
-    // ) => {
-    //   if (!shallow && router.asPath !== "/" && url === "/") {
-    //     setSearchResults([]);
-    //   }
-    // };
-    const handleRouteChange = (url: string) => {
-      if (router.pathname !== "/" && url === "/") {
+    const handleRouteChange = (
+      url: string,
+      { shallow }: { shallow: boolean }
+    ) => {
+      if (!shallow && router.asPath !== "/" && url === "/") {
         setSearchResults([]);
       }
     };
@@ -93,7 +110,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   console.log("_app", router.pathname);
   // ........................................
 
-  const handleSearchResults = async (results: Video[]) => {
+  const handleSearchResults = async (
+    results: Video[],
+    isSearchOperation: boolean
+  ) => {
     try {
       setLoading(true);
       const updatedResults = await Promise.all(
@@ -112,7 +132,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       );
       // console.log("updated", updatedResults);
       setSearchResults(updatedResults);
-      router.push("/");
+      // router.push("/");
+      router.push("/", "/", { shallow: !isSearchOperation });
     } catch (error) {
       console.error("Error fetching search results:", error);
     } finally {
@@ -125,7 +146,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       const response = await axios.get(
         `http://localhost:3000/api/youtube/channels/${channelId}?${apiKey}&part=snippet`
       );
-      console.log("new", response.data.items[0]);
+      // console.log("new", response.data.items[0]);
       return response.data.items[0];
     } catch (error) {
       console.error("Error fetching channel info:", error);
@@ -154,7 +175,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div className={roboto.className}>
       <Header
-        onSearchResults={handleSearchResults}
+        // onSearchResults={handleSearchResults}
+        onSearchResults={(results: Video[]) =>
+          handleSearchResults(results, true)
+        }
         toggleSidebar={toggleSidebar}
       />
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

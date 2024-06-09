@@ -82,10 +82,10 @@ export default function Home({ searchResults }: HomeProps) {
     }
   };
 
-  console.log("randomvideos", randomVideos);
+  // console.log("randomvideos", randomVideos);
 
   const handleVideoClick = (video: ExtendedVideo) => {
-    console.log("video", video);
+    // console.log("video", video);
     router.push({
       pathname: `/watch/${video.id}`,
     });
@@ -153,7 +153,7 @@ export default function Home({ searchResults }: HomeProps) {
                     // height={video.snippet.thumbnails.medium.height}
                     width={480}
                     height={270}
-                    className="video-image"
+                    // className="video-image"
                     // style={{ borderRadius: "12px" }}
                   />
                   <span
@@ -296,28 +296,35 @@ export default function Home({ searchResults }: HomeProps) {
               // marginTop: "120px",
               // marginLeft: "120px",
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
               gap: "20px",
             }}
           >
             {randomVideos.map((video) => (
               <div
                 key={video.id.videoId}
-                style={{ cursor: "pointer" }}
+                style={{
+                  cursor: "pointer",
+                  maxWidth: "400px",
+                  marginBottom: "5px",
+                }}
                 onClick={() => handleVideoClick(video)}
               >
                 <div style={{ position: "relative", display: "inline-block" }}>
-                  <Image
-                    src={video.snippet.thumbnails.medium.url}
-                    alt={video.snippet.title}
-                    width={310}
-                    height={180}
-                    style={{ borderRadius: "10px" }}
-                  />
+                  <div className="video-image">
+                    <Image
+                      src={video.snippet.thumbnails.medium.url}
+                      alt={video.snippet.title}
+                      width={390}
+                      height={210}
+                      // style={{ borderRadius: "10px" }}
+                    />
+                  </div>
                   <span
                     style={{
                       position: "absolute",
-                      top: "152px",
+                      // top: "152px",
+                      bottom: "10px",
                       right: "9px",
                       color: "white",
                       background: "rgba(0,0,0,0.65)",
@@ -330,30 +337,57 @@ export default function Home({ searchResults }: HomeProps) {
                     {convertDuration(video.contentDetails.duration)}
                   </span>
                 </div>
-                <p style={{ fontWeight: 600 }}>{video.snippet.title}</p>
                 <div
-                  style={{
-                    color: "#676767",
-                    fontSize: "13px",
-                    display: "flex",
-                    marginTop: "-14px",
-                    marginBottom: "15px",
-                    cursor: "pointer",
-                    width: "100%",
-                  }}
+                  style={{ display: "flex", gap: "20px", alignItems: "center" }}
                 >
-                  <span>{formatViewCount(video.statistics.viewCount)}</span>
-                  <svg
-                    xmlns="http:www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="#676767"
-                    className="bi bi-dot"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
-                  </svg>
-                  <span>{dateCalculation(video.snippet.publishedAt)}</span>
+                  <div>
+                    <Image
+                      src={
+                        video.channelImageUrl || "/default-channel-image.png"
+                      }
+                      alt="channel"
+                      width={40}
+                      height={40}
+                      style={{ borderRadius: "50%" }}
+                    />
+                  </div>
+                  <div>
+                    <p style={{ fontWeight: 600 }}>{video.snippet.title}</p>
+                    <p
+                      style={{
+                        color: "#676767",
+                        fontSize: "13px",
+                        marginTop: "-10px",
+                        marginBottom: "2px",
+                      }}
+                    >
+                      {video.snippet.channelTitle}
+                    </p>
+                    <div
+                      style={{
+                        color: "#676767",
+                        fontSize: "15px",
+                        display: "flex",
+                        // marginTop: "-14px",
+                        // marginBottom: "15px",
+                        cursor: "pointer",
+                        width: "100%",
+                      }}
+                    >
+                      <span>{formatViewCount(video.statistics.viewCount)}</span>
+                      <svg
+                        xmlns="http:www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="#676767"
+                        className="bi bi-dot"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+                      </svg>
+                      <span>{dateCalculation(video.snippet.publishedAt)}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -365,7 +399,8 @@ export default function Home({ searchResults }: HomeProps) {
         .video-container button {
           border-radius: 12px;
         }
-        .video-container:hover button {
+        .video-container:hover button,
+        .video-image:hover {
           border-radius: 0;
           transition: 0.3s;
         }
@@ -374,6 +409,11 @@ export default function Home({ searchResults }: HomeProps) {
         }
         .video-info:hover .dots {
           display: block;
+        }
+        .video-image {
+          border-radius: 10px;
+          overflow: hidden;
+          height: 210px;
         }
       `}</style>
     </div>

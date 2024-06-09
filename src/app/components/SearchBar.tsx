@@ -4,7 +4,7 @@ import { Video } from "../types/types";
 import { CiSearch } from "react-icons/ci";
 
 interface Props {
-  onSearchResults: (results: Video[]) => void;
+  onSearchResults: (results: Video[], isSearchOperation: boolean) => void;
 }
 
 export default function SearchBar({ onSearchResults }: Props) {
@@ -17,7 +17,8 @@ export default function SearchBar({ onSearchResults }: Props) {
           searchQuery
         )}`
       );
-      onSearchResults(response.data.items);
+      // onSearchResults(response.data.items);
+      onSearchResults(response.data.items, true);
     } catch (error) {
       console.error("Error searching YouTube:", error);
     }

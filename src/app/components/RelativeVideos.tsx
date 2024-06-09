@@ -22,7 +22,7 @@ export default function RelativeVideos({
   videoId,
   videoInfo,
 }: RelativeVideoProps) {
-  console.log("relative", searchResults);
+  // console.log("relative", searchResults);
 
   // const router = useRouter();
 
@@ -50,7 +50,7 @@ export default function RelativeVideos({
       const response = await axios.get(
         `http://localhost:3000/api/youtube/videos/${videoId}?${apiKey}&part=snippet,statistics,player,contentDetails`
       );
-      console.log(" asasasasas", response.data.items[0]);
+      // console.log(" asasasasas", response.data.items[0]);
       return response.data.items[0];
     } catch (error) {
       console.error("Error fetching channel info:", error);
@@ -67,7 +67,7 @@ export default function RelativeVideos({
   //   });
   // };
 
-  console.log("relative videdos", relativeVideos);
+  // console.log("relative videdos", relativeVideos);
 
   return (
     <>

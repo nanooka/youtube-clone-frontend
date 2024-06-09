@@ -85,7 +85,7 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({
         {channelVideos?.map((video) => (
           <div
             key={video.id.videoId}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", maxWidth: "300px" }}
             onClick={() => handleVideoClick(video)}
           >
             <div style={{ position: "relative", display: "inline-block" }}>

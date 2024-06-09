@@ -34,7 +34,7 @@ const ChannelSearchedVideos: React.FC<ChannelSearchedVideosProps> = ({
     handleSearch();
   }, [channelId, searchQuery]);
 
-  console.log("from channelSearch", searchResult);
+  // console.log("from channelSearch", searchResult);
 
   return (
     <div style={{ marginTop: "30px" }}>
