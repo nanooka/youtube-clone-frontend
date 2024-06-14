@@ -114,10 +114,12 @@ export default function Header({ onSearchResults, toggleSidebar }: Props) {
           </Link>
         </div>
         <SearchBar onSearchResults={onSearchResults} />
-        <button className="sign-in">
-          <Image src={SignInIcon} alt="sign-in" width={26} height={26} />
-          <span>Sign in</span>
-        </button>
+        <Link href={"/signin"} style={{ textDecoration: "none" }}>
+          <button className="sign-in">
+            <Image src={SignInIcon} alt="sign-in" width={26} height={26} />
+            <span>Sign in</span>
+          </button>
+        </Link>
       </header>
 
       <style jsx>{`

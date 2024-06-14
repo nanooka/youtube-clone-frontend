@@ -66,7 +66,7 @@ interface watchProps {
 export default function WatchPage({ searchResults }: watchProps) {
   const router = useRouter();
   const { v } = router.query;
-  const apiKey = "AIzaSyCB_jwO0CDx7oIHM3wUXTlU0zwiJOh12x8";
+  const apiKey = "AIzaSyB9Y0VMkev57rkase2o37r_xJOceqga-h0";
   console.log(v);
 
   const [videoInfo, setVideoInfo] = useState<Video | null>(null);

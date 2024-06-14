@@ -19,7 +19,7 @@ const roboto = Roboto({
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [searchResults, setSearchResults] = useState<Video[]>([]);
-  const apiKey = "AIzaSyCB_jwO0CDx7oIHM3wUXTlU0zwiJOh12x8";
+  const apiKey = "AIzaSyB9Y0VMkev57rkase2o37r_xJOceqga-h0";
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -174,17 +174,41 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <div className={roboto.className}>
-      <Header
+      {router.pathname !== "/signin" &&
+        router.pathname !== "/signup/name" &&
+        router.pathname !== "/signup/birthdaygender" &&
+        router.pathname !== "/signup/username" &&
+        router.pathname !== "/signup/password" && (
+          <>
+            <Header
+              // onSearchResults={handleSearchResults}
+              onSearchResults={(results: Video[]) =>
+                handleSearchResults(results, true)
+              }
+              toggleSidebar={toggleSidebar}
+            />
+            <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+          </>
+        )}
+      {/* <Header
         // onSearchResults={handleSearchResults}
         onSearchResults={(results: Video[]) =>
           handleSearchResults(results, true)
         }
         toggleSidebar={toggleSidebar}
       />
-      <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> */}
       <div
         className={`main-container ${
           isSidebarOpen ? "sidebar-open" : "sidebar-closed"
+        } ${
+          router.pathname == "/signin" ||
+          router.pathname == "/signup/name" ||
+          router.pathname == "/signup/birthdaygender" ||
+          router.pathname == "/signup/username" ||
+          router.pathname == "/signup/password"
+            ? "signin-page"
+            : ""
         }`}
       >
         <Component {...pageProps} searchResults={searchResults} />
@@ -203,6 +227,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
         .main-container.sidebar-closed {
           margin-left: 0;
+        }
+        .main-container.signin-page {
+          margin: -8px;
         }
       `}</style>
     </div>

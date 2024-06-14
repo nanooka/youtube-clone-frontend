@@ -8,7 +8,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const apiKey = "AIzaSyCB_jwO0CDx7oIHM3wUXTlU0zwiJOh12x8";
+const apiKey = "AIzaSyB9Y0VMkev57rkase2o37r_xJOceqga-h0";
 
 interface RelativeVideoProps {
   // searchResults: Video[];
