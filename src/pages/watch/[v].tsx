@@ -21,6 +21,8 @@ import { formatViewCount } from "@/app/formulas/formatViewCount";
 import { dateCalculation } from "@/app/formulas/dateCalculation";
 import CommentSection from "@/app/components/CommentSection";
 import RelativeVideos from "@/app/components/RelativeVideos";
+import { useUser } from "@/app/context/UserContext";
+import { useLogin } from "@/app/context/LoginContext";
 
 // const roboto = Roboto({
 //   subsets: ["latin"],
@@ -39,7 +41,7 @@ function formatDescription(description: string): string {
   const urlRegex = /(\bhttps?:\/\/[^\s]+)/g;
   const formattedDescription = description.replace(
     urlRegex,
-    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+    '<a href="$1" target="_blank" rel="noopener noreferrer"}>$1</a>'
   );
   return formattedDescription.replace(/\n/g, "<br>");
 }
@@ -66,8 +68,11 @@ interface watchProps {
 export default function WatchPage({ searchResults }: watchProps) {
   const router = useRouter();
   const { v } = router.query;
-  const apiKey = "AIzaSyB9Y0VMkev57rkase2o37r_xJOceqga-h0";
-  console.log(v);
+  const apiKey = process.env.apiKey;
+  // console.log(v);
+
+  const { user } = useUser();
+  const { loginData } = useLogin();
 
   const [videoInfo, setVideoInfo] = useState<Video | null>(null);
   const [channelInfo, setChannelInfo] = useState<ChannelInfo | null>(null);
@@ -91,8 +96,8 @@ export default function WatchPage({ searchResults }: watchProps) {
       console.error("Error searching YouTube:", error);
     }
   };
-  console.log("channelId", channelId);
-  console.log("videoInfo", videoInfo);
+  // console.log("channelId", channelId);
+  // console.log("videoInfo", videoInfo);
 
   const fetchComments = async () => {
     try {
@@ -105,7 +110,7 @@ export default function WatchPage({ searchResults }: watchProps) {
     }
   };
 
-  console.log("comments ", comments);
+  // console.log("comments ", comments);
 
   // useEffect(() => {
   const fetchChannel = async () => {
@@ -122,7 +127,7 @@ export default function WatchPage({ searchResults }: watchProps) {
   //   fetch();
   // }, [channelId]);
 
-  console.log(formatSubscriberCount("10000000"));
+  // console.log(formatSubscriberCount("10000000"));
 
   useEffect(() => {
     if (v) {
@@ -137,7 +142,7 @@ export default function WatchPage({ searchResults }: watchProps) {
     }
   }, [v, channelId]);
 
-  console.log("channelInfo", channelInfo);
+  // console.log("channelInfo", channelInfo);
 
   if (!videoInfo) {
     return <div>Loading...</div>;
@@ -145,11 +150,11 @@ export default function WatchPage({ searchResults }: watchProps) {
 
   // console.log(channelInfo?.snippet.thumbnails.medium.url);
 
-  const handleChannelClick = (channelId: string | undefined) => {
-    router.push({
-      pathname: `/channel/${channelId}`,
-    });
-  };
+  // const handleChannelClick = (channelId: string | undefined) => {
+  //   router.push({
+  //     pathname: `/channel/${channelId}`,
+  //   });
+  // };
 
   const createEmbedHtml = (html: string) => {
     // Create a temporary element to parse the HTML
@@ -172,6 +177,31 @@ export default function WatchPage({ searchResults }: watchProps) {
   const truncatedDescription = (description: string): string => {
     const lines = description.split("\n");
     return lines.slice(0, 3).join("<br>");
+  };
+
+  const handleLikeVideo = async () => {
+    try {
+      const requestData = {
+        userID: user?._id,
+        id: videoInfo.id,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${loginData.token}`,
+      };
+
+      const response = await fetch("http://localhost:3000/liked-videos", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      console.log("liked clicked", response);
+    } catch (error) {
+      console.error("Could not add video", error);
+    }
   };
 
   return (
@@ -226,6 +256,7 @@ export default function WatchPage({ searchResults }: watchProps) {
                   />
                 </Link>
               </div>
+
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <Link
                   href={`/channel/${channelId}`}
@@ -247,7 +278,7 @@ export default function WatchPage({ searchResults }: watchProps) {
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
               <div style={{ display: "flex" }}>
-                <button className="like">
+                <button className="like" onClick={handleLikeVideo}>
                   <AiOutlineLike style={{ width: "21px", height: "21px" }} />
                   <span style={{ fontSize: "15px" }}>
                     {formatLikeCount(videoInfo.statistics.likeCount)}

@@ -18,7 +18,7 @@ interface HomeProps {
 
 export default function Home({ searchResults }: HomeProps) {
   // const [searchResults, setSearchResults] = useState<Video[]>([]);
-  const apiKey = "AIzaSyB9Y0VMkev57rkase2o37r_xJOceqga-h0";
+  const apiKey = process.env.apiKey;
   const [randomVideos, setRandomVideos] = useState<ExtendedVideo[]>([]);
   const router = useRouter();
 

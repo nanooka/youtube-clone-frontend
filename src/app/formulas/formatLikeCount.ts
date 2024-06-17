@@ -2,7 +2,7 @@ export function formatLikeCount(likeCount: string): string {
   const count = parseInt(likeCount, 10);
 
   if (isNaN(count)) {
-    throw new Error("Invalid subscriber count");
+    return "Invalid subscriber count";
   }
 
   if (count >= 1000000) {

@@ -2,8 +2,33 @@ import Link from "next/link";
 // import GoogleIcon from "../../app/components/static/google_icon.svg";
 import GoogleIcon from "../../../app/components/static/google_icon.svg";
 import Image from "next/image";
+import { useForm } from "@/app/context/FormContext";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-export default function index() {
+export default function BirthdayGenderStep() {
+  const { formData, setFormData, nextStep } = useForm();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!formData.firstName || !formData.lastName) {
+      // Redirect to the name step if firstName or lastName is not set
+      router.push("/signup/name");
+    }
+  }, [formData, router]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleNext = () => {
+    nextStep();
+    router.push("/signup/username");
+  };
+
   return (
     <div
       style={{
@@ -46,7 +71,12 @@ export default function index() {
               marginTop: "15px",
             }}
           >
-            <select name="month" id="month">
+            <select
+              name="month"
+              id="month"
+              value={formData.month}
+              onChange={handleChange}
+            >
               <option value="" selected disabled hidden>
                 Month
               </option>
@@ -63,12 +93,28 @@ export default function index() {
               <option value="November">November</option>
               <option value="December">December</option>
             </select>
-            <input type="number" placeholder="Day" className="date-inputs" />
-            <input type="number" placeholder="Year" className="date-inputs" />
+            <input
+              type="number"
+              placeholder="Day"
+              className="date-inputs"
+              name="day"
+              value={formData.day}
+              onChange={handleChange}
+            />
+            <input
+              type="number"
+              placeholder="Year"
+              className="date-inputs"
+              name="year"
+              value={formData.year}
+              onChange={handleChange}
+            />
           </div>
           <select
             name="gender"
             id="gender"
+            value={formData.gender}
+            onChange={handleChange}
             style={{ width: "100%", marginTop: "15px" }}
           >
             <option value="" selected disabled hidden>
@@ -101,9 +147,11 @@ export default function index() {
               marginTop: "40px",
             }}
           >
-            <Link href={"/"}>
-              <button className="btn next-btn">Next</button>
-            </Link>
+            {/* <Link href={"/"}> */}
+            <button className="btn next-btn" onClick={handleNext}>
+              Next
+            </button>
+            {/* </Link> */}
           </div>
         </div>
         <div

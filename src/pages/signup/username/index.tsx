@@ -3,7 +3,49 @@ import Link from "next/link";
 import GoogleIcon from "../../../app/components/static/google_icon.svg";
 import Image from "next/image";
 
-export default function index() {
+import { useForm } from "@/app/context/FormContext";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+export default function UsernameStep() {
+  const { formData, setFormData, nextStep } = useForm();
+  const router = useRouter();
+  const [selectedEmail, setSelectedEmail] = useState("");
+  const [emailExamples, setEmailExamples] = useState<string[]>([]);
+  const [customEmail, setCustomEmail] = useState("");
+  const [createCustomEmail, setCreateCustomEmail] = useState(false);
+
+  useEffect(() => {
+    if (!formData.firstName || !formData.lastName) {
+      router.push("/signup/name");
+    } else {
+      const getRandomNumber = () => Math.floor(Math.random() * 9000) + 1000;
+      const examples = [
+        `${formData.firstName.toLowerCase()}.${formData.lastName.toLowerCase()}${getRandomNumber()}@gmail.com`,
+        `${formData.firstName[0].toLowerCase()}${formData.lastName.toLowerCase()}${getRandomNumber()}@gmail.com`,
+      ];
+      setEmailExamples(examples);
+    }
+  }, [formData, router]);
+
+  const handleEmailSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedEmail(e.target.value);
+    setCreateCustomEmail(false); // Deselect create custom email option
+    setCustomEmail(""); // Clear custom email input
+  };
+
+  const handleCustomEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomEmail(e.target.value);
+    setSelectedEmail(""); // Deselect any selected example email
+  };
+
+  const handleNext = () => {
+    const email = createCustomEmail ? customEmail : selectedEmail;
+    setFormData((prev) => ({ ...prev, email }));
+    nextStep();
+    router.push("/signup/password");
+  };
+
   return (
     <div
       style={{
@@ -38,12 +80,42 @@ export default function index() {
             marginTop: "50px",
           }}
         >
-          <input type="text" placeholder="First name" className="name-input" />
-          <input
-            type="text"
-            placeholder="Last name (optional)"
-            className="name-input"
-          />
+          {emailExamples.map((email) => (
+            <div key={email} style={{ marginBottom: "10px" }}>
+              <input
+                type="radio"
+                id={email}
+                name="email"
+                value={email}
+                checked={selectedEmail === email}
+                onChange={handleEmailSelection}
+              />
+              <label htmlFor={email} style={{ marginLeft: "10px" }}>
+                {email}
+              </label>
+            </div>
+          ))}
+          <div style={{ marginBottom: "10px" }}>
+            <input
+              type="radio"
+              id="customEmail"
+              name="email"
+              checked={createCustomEmail}
+              onChange={() => setCreateCustomEmail(true)}
+            />
+            <label htmlFor="customEmail" style={{ marginLeft: "10px" }}>
+              Create your own Gmail address
+            </label>
+            {createCustomEmail && (
+              <input
+                type="text"
+                value={customEmail}
+                onChange={handleCustomEmailChange}
+                placeholder="Enter your custom email"
+                style={{ marginLeft: "10px", width: "300px" }}
+              />
+            )}
+          </div>
 
           <div
             style={{
@@ -53,9 +125,11 @@ export default function index() {
               marginTop: "40px",
             }}
           >
-            <Link href={"/"}>
-              <button className="btn next-btn">Next</button>
-            </Link>
+            {/* <Link href={"/"}> */}
+            <button className="btn next-btn" onClick={handleNext}>
+              Next
+            </button>
+            {/* </Link> */}
           </div>
         </div>
         <div

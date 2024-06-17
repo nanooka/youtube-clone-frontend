@@ -3,7 +3,8 @@ export function convertDuration(duration: string): string {
   const matches = duration.match(regex);
 
   if (!matches) {
-    throw new Error("Invalid duration format");
+    // throw new Error("Invalid duration format");
+    return "Invalid duration format";
   }
 
   const hours = matches[1] ? parseInt(matches[1], 10) : 0;

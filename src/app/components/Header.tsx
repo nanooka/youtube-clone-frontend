@@ -10,6 +10,7 @@ import SearchBar from "./SearchBar";
 import { Video } from "../types/types";
 import { MdOutlineSubscriptions } from "react-icons/md";
 import Link from "next/link";
+import { useLogin } from "../context/LoginContext";
 
 interface Props {
   onSearchResults: (results: Video[]) => void;
@@ -17,6 +18,21 @@ interface Props {
 }
 
 export default function Header({ onSearchResults, toggleSidebar }: Props) {
+  const { loginData } = useLogin();
+
+  console.log("header", loginData);
+
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
+  const randomColor = getRandomColor();
+
   return (
     <div>
       <div
@@ -114,12 +130,32 @@ export default function Header({ onSearchResults, toggleSidebar }: Props) {
           </Link>
         </div>
         <SearchBar onSearchResults={onSearchResults} />
-        <Link href={"/signin"} style={{ textDecoration: "none" }}>
-          <button className="sign-in">
-            <Image src={SignInIcon} alt="sign-in" width={26} height={26} />
-            <span>Sign in</span>
-          </button>
-        </Link>
+
+        {!loginData.token ? (
+          <Link href={"/signin/identifier"} style={{ textDecoration: "none" }}>
+            <button className="sign-in">
+              <Image src={SignInIcon} alt="sign-in" width={26} height={26} />
+              <span>Sign in</span>
+            </button>
+          </Link>
+        ) : (
+          <div
+            style={{
+              backgroundColor: randomColor,
+              color: "#fff",
+              width: "40px",
+              height: "40px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "50%",
+              marginRight: "40px",
+              cursor: "pointer",
+            }}
+          >
+            {/* {loginData?.email.split("")[0].toUpperCase()} */}N
+          </div>
+        )}
       </header>
 
       <style jsx>{`

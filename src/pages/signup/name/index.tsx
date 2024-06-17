@@ -2,8 +2,23 @@ import Link from "next/link";
 // import GoogleIcon from "../../app/components/static/google_icon.svg";
 import GoogleIcon from "../../../app/components/static/google_icon.svg";
 import Image from "next/image";
+import { useForm } from "@/app/context/FormContext";
+import { useRouter } from "next/router";
 
-export default function index() {
+export default function NameStep() {
+  const { formData, setFormData, nextStep } = useForm();
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleNext = () => {
+    nextStep();
+    router.push("/signup/birthdaygender");
+  };
+
   return (
     <div
       style={{
@@ -38,11 +53,21 @@ export default function index() {
             marginTop: "50px",
           }}
         >
-          <input type="text" placeholder="First name" className="name-input" />
+          <input
+            type="text"
+            placeholder="First name"
+            className="name-input"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+          />
           <input
             type="text"
             placeholder="Last name (optional)"
             className="name-input"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
           />
 
           <div
@@ -53,9 +78,11 @@ export default function index() {
               marginTop: "40px",
             }}
           >
-            <Link href={"/"}>
-              <button className="btn next-btn">Next</button>
-            </Link>
+            {/* <Link href={"/"}> */}
+            <button className="btn next-btn" onClick={handleNext}>
+              Next
+            </button>
+            {/* </Link> */}
           </div>
         </div>
         <div

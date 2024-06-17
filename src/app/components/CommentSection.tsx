@@ -18,145 +18,162 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 }) => {
   return (
     <>
-      <div style={{ display: "flex", alignItems: "center", gap: "40px" }}>
-        <h3>
-          {formatNumberWithCommas(+videoInfo.statistics.commentCount)} Comments
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "4px",
-            cursor: "pointer",
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            fill="currentColor"
-            className="bi bi-filter-left"
-            viewBox="0 0 16 16"
-          >
-            <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
-          </svg>
-          <span style={{ fontSize: "15px", fontWeight: 600 }}>Sort by</span>
-        </div>
-      </div>
-
-      <ul>
-        {comments.map((comment) => (
-          <li key={comment.id} className="comment">
-            <div className="comment-author">
-              <Link href={`/channel/${videoInfo.snippet.channelId}`}>
-                <Image
-                  src={
-                    comment.snippet.topLevelComment.snippet
-                      .authorProfileImageUrl
-                  }
-                  alt="author"
-                  width={38}
-                  height={38}
-                  style={{ borderRadius: "50%" }}
-                />
-              </Link>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                  }}
-                >
-                  <span style={{ fontSize: "14px", fontWeight: 600 }}>
-                    <Link
-                      href={`/channel/${videoInfo.snippet.channelId}`}
-                      style={{ textDecoration: "none", color: "black" }}
-                    >
-                      {
-                        comment.snippet.topLevelComment.snippet
-                          .authorDisplayName
-                      }
-                    </Link>
-                  </span>
-                  <span style={{ color: "#676767", fontSize: "12px" }}>
-                    {dateCalculation(
-                      comment.snippet.topLevelComment.snippet.publishedAt
-                    )}
-                  </span>
-                </div>
-                <p
-                  style={{
-                    fontSize: "14.5px",
-                    marginTop: "4px",
-                    maxWidth: "90%",
-                  }}
-                >
-                  {comment.snippet.topLevelComment.snippet.textDisplay}
-                </p>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "24px",
-                  }}
-                >
-                  <div style={{ position: "relative" }}>
-                    <div className="like-dislike-comment">
-                      <AiOutlineLike
-                        style={{
-                          width: "21px",
-                          height: "21px",
-                        }}
-                      />
-                    </div>
-                    {comment.snippet.topLevelComment.snippet.likeCount > 0 && (
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          color: "#676767",
-                          position: "absolute",
-                          right: "-8px",
-                          top: 0,
-                        }}
-                      >
-                        {comment.snippet.topLevelComment.snippet.likeCount}
-                      </span>
-                    )}
-                  </div>
-                  <div className="like-dislike-comment">
-                    <BiDislike style={{ width: "21px", height: "21px" }} />
-                  </div>
-                  <span style={{ fontSize: "12px", fontWeight: 600 }}>
-                    Reply
-                  </span>
-                </div>
-              </div>
+      {+videoInfo.statistics.commentCount > 0 ? (
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "40px" }}>
+            <h3>
+              {formatNumberWithCommas(+videoInfo.statistics.commentCount)}{" "}
+              Comments
+            </h3>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                cursor: "pointer",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                fill="currentColor"
+                className="bi bi-filter-left"
+                viewBox="0 0 16 16"
+              >
+                <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
+              </svg>
+              <span style={{ fontSize: "15px", fontWeight: 600 }}>Sort by</span>
             </div>
-            {/* <div className="comment-actions">
+          </div>
+          <ul>
+            {comments.map((comment) => (
+              <li key={comment.id} className="comment">
+                <div className="comment-author">
+                  <Link href={`/channel/${videoInfo.snippet.channelId}`}>
+                    <Image
+                      src={
+                        comment.snippet.topLevelComment.snippet
+                          .authorProfileImageUrl
+                      }
+                      alt="author"
+                      width={38}
+                      height={38}
+                      style={{ borderRadius: "50%" }}
+                    />
+                  </Link>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                      }}
+                    >
+                      <span style={{ fontSize: "14px", fontWeight: 600 }}>
+                        <Link
+                          href={`/channel/${videoInfo.snippet.channelId}`}
+                          style={{ textDecoration: "none", color: "black" }}
+                        >
+                          {
+                            comment.snippet.topLevelComment.snippet
+                              .authorDisplayName
+                          }
+                        </Link>
+                      </span>
+                      <span style={{ color: "#676767", fontSize: "12px" }}>
+                        {dateCalculation(
+                          comment.snippet.topLevelComment.snippet.publishedAt
+                        )}
+                      </span>
+                    </div>
+                    <p
+                      style={{
+                        fontSize: "14.5px",
+                        marginTop: "4px",
+                        maxWidth: "90%",
+                      }}
+                    >
+                      {comment.snippet.topLevelComment.snippet.textDisplay}
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "24px",
+                      }}
+                    >
+                      <div style={{ position: "relative" }}>
+                        <div className="like-dislike-comment">
+                          <AiOutlineLike
+                            style={{
+                              width: "21px",
+                              height: "21px",
+                            }}
+                          />
+                        </div>
+                        {comment.snippet.topLevelComment.snippet.likeCount >
+                          0 && (
+                          <span
+                            style={{
+                              fontSize: "12px",
+                              color: "#676767",
+                              position: "absolute",
+                              right: "-8px",
+                              top: 0,
+                            }}
+                          >
+                            {comment.snippet.topLevelComment.snippet.likeCount}
+                          </span>
+                        )}
+                      </div>
+                      <div className="like-dislike-comment">
+                        <BiDislike style={{ width: "21px", height: "21px" }} />
+                      </div>
+                      <span style={{ fontSize: "12px", fontWeight: 600 }}>
+                        Reply
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {/* <div className="comment-actions">
         <span className="like-count">
           {comment.snippet.topLevelComment.snippet.likeCount}
         </span>
       </div> */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              fill="rgba(0,0,0,0.8)"
-              className="bi bi-three-dots-vertical"
-              viewBox="0 0 16 16"
-              style={{
-                position: "absolute",
-                right: 0,
-                top: "10px",
-                cursor: "pointer",
-              }}
-            >
-              <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-            </svg>
-          </li>
-        ))}
-      </ul>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="rgba(0,0,0,0.8)"
+                  className="bi bi-three-dots-vertical"
+                  viewBox="0 0 16 16"
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                </svg>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p style={{ marginLeft: "200px", marginTop: "100px" }}>
+          Comments are turned off.{" "}
+          <Link
+            href={"https://support.google.com/youtube/answer/9706180?hl=en"}
+            style={{ textDecoration: "none", color: "#065fd4" }}
+            target="_blank"
+          >
+            Learn more
+          </Link>
+        </p>
+      )}
+
       <style jsx>{`
         .comment {
           display: flex;

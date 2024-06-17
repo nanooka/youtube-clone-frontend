@@ -1,19 +1,56 @@
 import Link from "next/link";
-import GoogleIcon from "../../app/components/static/google_icon.svg";
+import GoogleIcon from "../../../app/components/static/google_icon.svg";
 import Image from "next/image";
+import { useLogin } from "@/app/context/LoginContext";
+import { useState } from "react";
 
-export default function index() {
+export default function SignIn() {
+  const { loginData, setLoginData, handleNext } = useLogin();
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isEmailRegistered, setIsEmailRegistered] = useState(true);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const checkEmailRegistered = async (email: string) => {
+    try {
+      const response = await fetch("http://localhost:3000/users/check-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      return data.registered;
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return false;
+    }
+  };
+
+  const handleNextClick = async () => {
+    if (!loginData.email) {
+      setIsEmailValid(false);
+    } else {
+      setIsEmailValid(true);
+      const isRegistered = await checkEmailRegistered(loginData.email);
+      if (!isRegistered) {
+        setIsEmailRegistered(false);
+      } else {
+        setIsEmailRegistered(true);
+        handleNext();
+      }
+    }
+  };
+
   return (
     <div
       style={{
         backgroundColor: "#f0f4f9",
-        // backgroundColor: "red",
-        // width: "100vw",
-        // height: "99.25vh",
-        // marginLeft: "-108px",
-        // marginTop: "-10px",
         height: "100vh",
-        // position: "relative",
       }}
     >
       <div
@@ -21,7 +58,6 @@ export default function index() {
           backgroundColor: "#fff",
           padding: "40px",
           display: "flex",
-          // alignItems: "center",
           justifyContent: "space-between",
           width: "60%",
           marginLeft: "50%",
@@ -41,7 +77,21 @@ export default function index() {
             alignItems: "start",
           }}
         >
-          <input type="text" placeholder="Email or phone" />
+          <input
+            type="text"
+            placeholder="Email or phone"
+            name="email"
+            value={loginData.email}
+            onChange={handleChange}
+            style={{
+              borderColor: isEmailValid ? "#747775" : "red",
+            }}
+          />
+          {!isEmailRegistered && (
+            <span style={{ color: "red", marginTop: "10px" }}>
+              Email not registered.
+            </span>
+          )}
           <button className="forgot-btn">Forgot email?</button>
           <span style={{ fontSize: "15px", marginTop: "40px" }}>
             Not your computer? Use a private browsing window to sign in.
@@ -69,12 +119,14 @@ export default function index() {
               marginTop: "40px",
             }}
           >
-            <Link href={"/"}>
-              <button className="btn create-btn">Create account</button>
-            </Link>
-            <Link href={"/"}>
-              <button className="btn next-btn">Next</button>
-            </Link>
+            {/* <Link href={"/"}> */}
+            <button className="btn create-btn">Create account</button>
+            {/* </Link> */}
+            {/* <Link href={"/"}> */}
+            <button className="btn next-btn" onClick={handleNextClick}>
+              Next
+            </button>
+            {/* </Link> */}
           </div>
         </div>
         <div

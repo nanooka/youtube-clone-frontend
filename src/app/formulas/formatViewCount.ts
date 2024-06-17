@@ -2,7 +2,7 @@ export function formatViewCount(views: string): string {
   const count = parseInt(views, 10);
 
   if (isNaN(count)) {
-    throw new Error("Invalid subscriber count");
+    return "Invalid subscriber count";
   }
 
   if (count >= 1000000000) {

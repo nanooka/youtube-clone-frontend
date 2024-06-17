@@ -14,7 +14,7 @@ import ChannelSearchedVideos from "@/app/components/ChannelSearchedVideos";
 
 export default function ChannelPage() {
   const apiUrl = "http://localhost:3000/api/youtube";
-  const apiKey = "AIzaSyB9Y0VMkev57rkase2o37r_xJOceqga-h0";
+  const apiKey = process.env.apiKey;
   const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
   const channelId = router.query.channel;

@@ -53,7 +53,7 @@ export const dateCalculation = (publishedAt: string): string => {
   try {
     const publishedDate = parseISO(publishedAt);
     if (!isValid(publishedDate)) {
-      throw new Error("Invalid date format");
+      return "Invalid date format";
     }
 
     const now = new Date();

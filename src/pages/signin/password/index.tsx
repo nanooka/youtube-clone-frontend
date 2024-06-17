@@ -1,77 +1,60 @@
 import Link from "next/link";
-// import GoogleIcon from "../../app/components/static/google_icon.svg";
 import GoogleIcon from "../../../app/components/static/google_icon.svg";
 import Image from "next/image";
-import { useState } from "react";
-import { useForm } from "@/app/context/FormContext";
+import { useReducer, useState } from "react";
+import { useLogin } from "@/app/context/LoginContext";
 import { useRouter } from "next/router";
+import { useUser } from "@/app/context/UserContext";
 
-export default function PasswordStep() {
-  const { formData, setFormData, nextStep } = useForm();
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+export default function Password() {
+  const { loginData, setLoginData } = useLogin();
+  const { fetchUser } = useUser();
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const router = useRouter();
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    setError(""); // Clear any previous error
-  };
-
-  const handleConfirmPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setConfirmPassword(e.target.value);
-    setError(""); // Clear any previous error
-  };
 
   const handleShowPasswordToggle = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleNext = async () => {
-    // Basic password validation
-    if (!password || !confirmPassword) {
-      setError("Please fill in both password fields.");
-      return;
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match. Please re-enter.");
-      return;
-    }
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      password,
-    }));
-
-    // nextStep();
+  const handleNextClick = async () => {
     try {
-      const response = await fetch("http://localhost:3000/users", {
+      const response = await fetch("http://localhost:3000/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email: loginData.email,
+          password: loginData.password,
+        }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log("User created successfully:", data);
-        // Navigate to success page or perform next steps
-        router.push("/confirmation");
+        // handle successful login, e.g., redirect or save token
+        console.log("Login successful:", data);
+        setLoginData((prevData) => ({
+          ...prevData,
+          userID: data.userID,
+          token: data.token,
+        }));
+        setPasswordError(null); // clear any previous errors
+        await fetchUser(data.userID);
+        router.push("/");
       } else {
         const errorData = await response.json();
-        console.error("Failed to create user:", errorData.error);
-        setError("Failed to create user. Please try again.");
+        setPasswordError(errorData.error);
       }
     } catch (error) {
-      console.error("Error occurred:", error);
-      setError("Error occurred while creating user. Please try again.");
+      console.error("Error logging in:", error);
+      setPasswordError("Internal server error");
     }
-    router.push("/signup/password");
   };
 
   return (
@@ -86,46 +69,39 @@ export default function PasswordStep() {
           backgroundColor: "#fff",
           padding: "40px",
           display: "flex",
+          // alignItems: "center",
           justifyContent: "space-between",
           width: "60%",
           marginLeft: "50%",
           transform: "translate(-50%, 50%)",
           borderRadius: "40px",
-          gap: "60px",
         }}
       >
         <div>
           <Image src={GoogleIcon} alt="google-icon" width={70} height={70} />
-          <h1 style={{ fontSize: "35px", fontWeight: 400 }}>
-            Create a strong password
-          </h1>
-          <p>
-            Create a strong password with a mix of letters, numbers and symbols
-          </p>
+          <h1 style={{ fontSize: "35px", fontWeight: 400 }}>Hi</h1>
+          <p>to continue to YouTube</p>
         </div>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "start",
-            marginTop: "50px",
+            // alignItems: "start",
+            // justifyContent: "start",
           }}
         >
+          <span style={{ fontSize: "15px", marginTop: "40px" }}>
+            To continue, first verify it’s you
+          </span>
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            className="name-input"
-            value={password}
-            onChange={handlePasswordChange}
+            placeholder="Enter your password"
+            name="password"
+            value={loginData.password}
+            onChange={handleChange}
           />
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Confirm"
-            className="name-input"
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
-          />
-          <div>
+          <span style={{ color: "Red" }}>{passwordError}</span>
+          <div style={{ marginTop: "10px" }}>
             <input
               type="checkbox"
               checked={showPassword}
@@ -133,7 +109,6 @@ export default function PasswordStep() {
             />
             <label>Show password</label>
           </div>
-          {error && <p style={{ color: "red" }}>{error}</p>}
           <div
             style={{
               alignSelf: "end",
@@ -143,7 +118,10 @@ export default function PasswordStep() {
             }}
           >
             {/* <Link href={"/"}> */}
-            <button className="btn next-btn" onClick={handleNext}>
+            <button className="btn create-btn">Forgot password?</button>
+            {/* </Link> */}
+            {/* <Link href={"/"}> */}
+            <button className="btn next-btn" onClick={handleNextClick}>
               Next
             </button>
             {/* </Link> */}
@@ -186,40 +164,17 @@ export default function PasswordStep() {
       </div>
 
       <style jsx>{`
-        .name-input {
+        input[type="text"],
+        input[type="password"] {
           padding: 20px 15px;
           border-radius: 5px;
           border: 1px solid #747775;
           width: 400px;
-          margin-top: 20px;
+          margin-top: 40px;
         }
-        .name-input:focus,
-        .date-inputs:focus,
-        select:focus {
+        input[type="text"]:focus,
+        input[type="password"]:focus {
           outline: 1px solid #0b57d0;
-        }
-
-        ::placeholder {
-          color: #000;
-        }
-
-        .date-inputs,
-        select {
-          padding: 15px;
-          border-radius: 5px;
-          border: 1px solid #747775;
-        }
-
-        .link-btn {
-          border: none;
-          background-color: transparent;
-          padding: 4px 4px 6px 0;
-          border-radius: 10px;
-          margin-top: 5px;
-          cursor: pointer;
-        }
-        .link-btn:hover {
-          background-color: #f0f4f9;
         }
 
         .btn {
@@ -230,6 +185,14 @@ export default function PasswordStep() {
           font-size: 15px;
           font-weight: 600;
         }
+
+        .create-btn {
+          color: #0b57d0;
+          background-color: #fff;
+        }
+        .create-btn:hover {
+          background-color: #f0f4f9;
+        }
         .next-btn {
           background-color: #0b57d0;
           color: #fff;
@@ -237,7 +200,23 @@ export default function PasswordStep() {
         .next-btn:hover {
           background-color: #0e4eb5;
         }
-
+        .forgot-btn {
+          color: #0b57d0;
+          font-weight: 600;
+          margin-top: 6px;
+          cursor: pointer;
+        }
+        .guest-mode-link,
+        .forgot-btn {
+          border: none;
+          background-color: transparent;
+          padding: 4px 4px 6px 0;
+          border-radius: 10px;
+        }
+        .guest-mode-link:hover,
+        .forgot-btn:hover {
+          background-color: #f0f4f9;
+        }
         .more-div span {
           padding: 10px 14px;
           cursor: pointer;
@@ -246,10 +225,6 @@ export default function PasswordStep() {
         .more-div span:hover {
           background-color: #e2e7eb;
           border-radius: 12px;
-        }
-        input::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
         }
       `}</style>
     </div>

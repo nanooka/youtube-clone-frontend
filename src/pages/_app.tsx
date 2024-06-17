@@ -10,6 +10,9 @@ import nProgress from "nprogress";
 import "../styles/nprogress.css";
 
 import { Roboto } from "next/font/google";
+import { FormProvider } from "@/app/context/FormContext";
+import { LoginProvider } from "@/app/context/LoginContext";
+import { UserProvider } from "@/app/context/UserContext";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -19,7 +22,7 @@ const roboto = Roboto({
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [searchResults, setSearchResults] = useState<Video[]>([]);
-  const apiKey = "AIzaSyB9Y0VMkev57rkase2o37r_xJOceqga-h0";
+  const apiKey = process.env.apiKey;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -173,24 +176,32 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <div className={roboto.className}>
-      {router.pathname !== "/signin" &&
-        router.pathname !== "/signup/name" &&
-        router.pathname !== "/signup/birthdaygender" &&
-        router.pathname !== "/signup/username" &&
-        router.pathname !== "/signup/password" && (
-          <>
-            <Header
-              // onSearchResults={handleSearchResults}
-              onSearchResults={(results: Video[]) =>
-                handleSearchResults(results, true)
-              }
-              toggleSidebar={toggleSidebar}
-            />
-            <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-          </>
-        )}
-      {/* <Header
+    <FormProvider>
+      <LoginProvider>
+        <UserProvider>
+          <div className={roboto.className}>
+            {router.pathname !== "/signin/identifier" &&
+              router.pathname !== "/signin/password" &&
+              router.pathname !== "/signup/name" &&
+              router.pathname !== "/signup/birthdaygender" &&
+              router.pathname !== "/signup/username" &&
+              router.pathname !== "/signup/password" &&
+              router.pathname !== "/confirmation" && (
+                <>
+                  <Header
+                    // onSearchResults={handleSearchResults}
+                    onSearchResults={(results: Video[]) =>
+                      handleSearchResults(results, true)
+                    }
+                    toggleSidebar={toggleSidebar}
+                  />
+                  <SideBar
+                    isOpen={isSidebarOpen}
+                    toggleSidebar={toggleSidebar}
+                  />
+                </>
+              )}
+            {/* <Header
         // onSearchResults={handleSearchResults}
         onSearchResults={(results: Video[]) =>
           handleSearchResults(results, true)
@@ -198,41 +209,46 @@ function MyApp({ Component, pageProps }: AppProps) {
         toggleSidebar={toggleSidebar}
       />
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> */}
-      <div
-        className={`main-container ${
-          isSidebarOpen ? "sidebar-open" : "sidebar-closed"
-        } ${
-          router.pathname == "/signin" ||
-          router.pathname == "/signup/name" ||
-          router.pathname == "/signup/birthdaygender" ||
-          router.pathname == "/signup/username" ||
-          router.pathname == "/signup/password"
-            ? "signin-page"
-            : ""
-        }`}
-      >
-        <Component {...pageProps} searchResults={searchResults} />
-      </div>
-      <style jsx>{`
-        // .main-container {
-        //   transition: margin-left 0.3s ease-in-out;
-        // }
+            <div
+              className={`main-container ${
+                isSidebarOpen ? "sidebar-open" : "sidebar-closed"
+              } ${
+                router.pathname == "/signin/identifier" ||
+                router.pathname == "/signin/password" ||
+                router.pathname == "/signup/name" ||
+                router.pathname == "/signup/birthdaygender" ||
+                router.pathname == "/signup/username" ||
+                router.pathname == "/signup/password" ||
+                router.pathname == "/confirmation"
+                  ? "signin-page"
+                  : ""
+              }`}
+            >
+              <Component {...pageProps} searchResults={searchResults} />
+            </div>
+            <style jsx>{`
+              // .main-container {
+              //   transition: margin-left 0.3s ease-in-out;
+              // }
 
-        body {
-          // font-family: "Roboto", sans-serif;
-        }
-        .main-container.sidebar-open {
-          margin-left: 100px; /* Adjust the value to match the width of your sidebar */
-        }
+              body {
+                // font-family: "Roboto", sans-serif;
+              }
+              .main-container.sidebar-open {
+                margin-left: 100px; /* Adjust the value to match the width of your sidebar */
+              }
 
-        .main-container.sidebar-closed {
-          margin-left: 0;
-        }
-        .main-container.signin-page {
-          margin: -8px;
-        }
-      `}</style>
-    </div>
+              .main-container.sidebar-closed {
+                margin-left: 0;
+              }
+              .main-container.signin-page {
+                margin: -8px;
+              }
+            `}</style>
+          </div>
+        </UserProvider>
+      </LoginProvider>
+    </FormProvider>
   );
 }
 
