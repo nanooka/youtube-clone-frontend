@@ -11,6 +11,12 @@ interface ChannelLiveVideosProps {
   handleVideoClick: (video: Video) => void;
 }
 
+function isVideoIdObject(
+  id: string | { videoId: string }
+): id is { videoId: string } {
+  return (id as { videoId: string }).videoId !== undefined;
+}
+
 const ChannelLiveVideos: React.FC<ChannelLiveVideosProps> = ({
   channelId,
   handleVideoClick,
@@ -85,7 +91,7 @@ const ChannelLiveVideos: React.FC<ChannelLiveVideosProps> = ({
       >
         {channelLivevideos?.map((video) => (
           <div
-            key={video.id.videoId}
+            key={isVideoIdObject(video.id) ? video.id.videoId : video.id}
             style={{ cursor: "pointer" }}
             onClick={() => handleVideoClick(video)}
           >

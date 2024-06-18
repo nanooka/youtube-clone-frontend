@@ -12,7 +12,7 @@ import {
   ExtendedVideo,
   Video,
 } from "@/app/types/types";
-import { AiOutlineLike } from "react-icons/ai";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { BiDislike } from "react-icons/bi";
 import { formatLikeCount } from "@/app/formulas/formatLikeCount";
 import { PiDotsThreeBold, PiShareFatLight } from "react-icons/pi";
@@ -23,19 +23,6 @@ import CommentSection from "@/app/components/CommentSection";
 import RelativeVideos from "@/app/components/RelativeVideos";
 import { useUser } from "@/app/context/UserContext";
 import { useLogin } from "@/app/context/LoginContext";
-
-// const roboto = Roboto({
-//   subsets: ["latin"],
-//   weight: ["400", "500", "700"],
-// });
-
-// function formatDescription(description: string): string {
-//   const urlRegex = /(\bhttps?:\/\/[^\s]+)/g;
-//   return description.replace(
-//     urlRegex,
-//     '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
-//   );
-// }
 
 function formatDescription(description: string): string {
   const urlRegex = /(\bhttps?:\/\/[^\s]+)/g;
@@ -75,9 +62,11 @@ export default function WatchPage({ searchResults }: watchProps) {
   const { loginData } = useLogin();
 
   const [videoInfo, setVideoInfo] = useState<Video | null>(null);
+  // const [videoID, setVideoID] = useState<String | undefined>(undefined);
   const [channelInfo, setChannelInfo] = useState<ChannelInfo | null>(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [comments, setComments] = useState<CommentThread[]>([]);
+  const [isLiked, setIsLiked] = useState(false);
 
   //
   // const [channelId, setChannelId] = useState<string | undefined>(undefined);
@@ -85,6 +74,7 @@ export default function WatchPage({ searchResults }: watchProps) {
   // console.log("channelId", channelId);
 
   //
+  console.log("logindata", loginData);
 
   const hydrate = async () => {
     try {
@@ -97,7 +87,7 @@ export default function WatchPage({ searchResults }: watchProps) {
     }
   };
   // console.log("channelId", channelId);
-  // console.log("videoInfo", videoInfo);
+  console.log("videoInfo", videoInfo);
 
   const fetchComments = async () => {
     try {
@@ -144,17 +134,78 @@ export default function WatchPage({ searchResults }: watchProps) {
 
   // console.log("channelInfo", channelInfo);
 
-  if (!videoInfo) {
-    return <div>Loading...</div>;
-  }
+  // if (!videoInfo) {
+  //   return <div>Loading...</div>;
+  // }
 
-  // console.log(channelInfo?.snippet.thumbnails.medium.url);
+  useEffect(() => {
+    if (user && videoInfo) {
+      const videoId =
+        typeof videoInfo.id === "string" ? videoInfo.id : videoInfo.id.videoId;
+      const isVideoLiked = user.likedVideos.some(
+        (likedVideo) =>
+          likedVideo.userID === loginData.userID && likedVideo.id === videoId
+      );
+      setIsLiked(isVideoLiked);
+    }
+  }, [user, videoInfo, loginData]);
+  console.log(isLiked);
 
-  // const handleChannelClick = (channelId: string | undefined) => {
-  //   router.push({
-  //     pathname: `/channel/${channelId}`,
-  //   });
-  // };
+  const handleLikeVideo = async () => {
+    if (loginData && videoInfo) {
+      try {
+        const requestData = {
+          userID: loginData.userID,
+          id: videoInfo.id,
+        };
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${loginData.token}`,
+        };
+
+        const response = await fetch("http://localhost:3000/liked-videos", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        console.log("liked clicked", response);
+      } catch (error) {
+        console.error("Could not add video", error);
+      }
+      setIsLiked(true);
+    }
+  };
+
+  const handleDislikeVideo = async () => {
+    if (loginData && videoInfo) {
+      try {
+        const requestData = {
+          userID: loginData.userID,
+          id: videoInfo.id,
+        };
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${loginData.token}`,
+        };
+
+        const response = await fetch("http://localhost:3000/liked-videos", {
+          method: "DELETE",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        console.log("liked clicked", response);
+      } catch (error) {
+        console.error("Could not add video", error);
+      }
+      setIsLiked(false);
+    }
+  };
 
   const createEmbedHtml = (html: string) => {
     // Create a temporary element to parse the HTML
@@ -177,31 +228,6 @@ export default function WatchPage({ searchResults }: watchProps) {
   const truncatedDescription = (description: string): string => {
     const lines = description.split("\n");
     return lines.slice(0, 3).join("<br>");
-  };
-
-  const handleLikeVideo = async () => {
-    try {
-      const requestData = {
-        userID: user?._id,
-        id: videoInfo.id,
-      };
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${loginData.token}`,
-      };
-
-      const response = await fetch("http://localhost:3000/liked-videos", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(requestData),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      console.log("liked clicked", response);
-    } catch (error) {
-      console.error("Could not add video", error);
-    }
   };
 
   return (
@@ -278,13 +304,24 @@ export default function WatchPage({ searchResults }: watchProps) {
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
               <div style={{ display: "flex" }}>
-                <button className="like" onClick={handleLikeVideo}>
-                  <AiOutlineLike style={{ width: "21px", height: "21px" }} />
-                  <span style={{ fontSize: "15px" }}>
-                    {formatLikeCount(videoInfo.statistics.likeCount)}
-                  </span>
-                  <div className="vertical-line"></div>
-                </button>
+                {isLiked ? (
+                  <button className="like" onClick={handleDislikeVideo}>
+                    <AiFillLike style={{ width: "21px", height: "21px" }} />
+                    <span style={{ fontSize: "15px" }}>
+                      {formatLikeCount(videoInfo.statistics.likeCount)}
+                    </span>
+                    <div className="vertical-line"></div>
+                  </button>
+                ) : (
+                  <button className="like" onClick={handleLikeVideo}>
+                    <AiOutlineLike style={{ width: "21px", height: "21px" }} />
+                    <span style={{ fontSize: "15px" }}>
+                      {formatLikeCount(videoInfo.statistics.likeCount)}
+                    </span>
+                    <div className="vertical-line"></div>
+                  </button>
+                )}
+
                 <button className="dislike">
                   <BiDislike style={{ width: "21px", height: "21px" }} />
                 </button>

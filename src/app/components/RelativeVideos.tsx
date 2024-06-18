@@ -17,6 +17,12 @@ interface RelativeVideoProps {
   videoInfo: Video | null;
 }
 
+function isVideoIdObject(
+  id: string | { videoId: string }
+): id is { videoId: string } {
+  return (id as { videoId: string }).videoId !== undefined;
+}
+
 export default function RelativeVideos({
   searchResults,
   videoId,
@@ -74,11 +80,18 @@ export default function RelativeVideos({
       <ul>
         {relativeVideos
           ? relativeVideos.map((video) => (
-              <li key={video.id.videoId} style={{ listStyle: "none" }}>
+              <li
+                key={isVideoIdObject(video.id) ? video.id.videoId : video.id}
+                style={{ listStyle: "none" }}
+              >
                 <div
                   style={{ display: "flex", gap: "10px", marginTop: "10px" }}
                 >
-                  <Link href={`/watch/${video.id.videoId}`}>
+                  <Link
+                    href={`/watch?v=${
+                      isVideoIdObject(video.id) ? video.id.videoId : video.id
+                    }`}
+                  >
                     <Image
                       src={video.snippet.thumbnails.medium.url}
                       alt="video-image"
@@ -90,7 +103,9 @@ export default function RelativeVideos({
                   </Link>
                   <div>
                     <Link
-                      href={`/watch/${video.id.videoId}`}
+                      href={`/watch?v=${
+                        isVideoIdObject(video.id) ? video.id.videoId : video.id
+                      }`}
                       style={{ textDecoration: "none", color: "black" }}
                     >
                       <p
@@ -135,7 +150,11 @@ export default function RelativeVideos({
                         <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
                       </svg> */}
                       <Link
-                        href={`/watch/${video.id.videoId}`}
+                        href={`/watch?v=${
+                          isVideoIdObject(video.id)
+                            ? video.id.videoId
+                            : video.id
+                        }`}
                         style={{
                           textDecoration: "none",
                           color: "#676767",

@@ -12,6 +12,12 @@ interface ChannelSearchedVideosProps {
   handleVideoClick: (video: Video) => void;
 }
 
+function isVideoIdObject(
+  id: string | { videoId: string }
+): id is { videoId: string } {
+  return (id as { videoId: string }).videoId !== undefined;
+}
+
 const ChannelSearchedVideos: React.FC<ChannelSearchedVideosProps> = ({
   channelId,
   searchQuery,
@@ -40,7 +46,7 @@ const ChannelSearchedVideos: React.FC<ChannelSearchedVideosProps> = ({
     <div style={{ marginTop: "30px" }}>
       {searchResult?.map((video) => (
         <div
-          key={video.id.videoId}
+          key={isVideoIdObject(video.id) ? video.id.videoId : video.id}
           //   style={{ cursor: "pointer" }}
           style={{
             display: "flex",

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import GoogleIcon from "../../../app/components/static/google_icon.svg";
 import Image from "next/image";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { useLogin } from "@/app/context/LoginContext";
 import { useRouter } from "next/router";
 import { useUser } from "@/app/context/UserContext";
@@ -11,7 +11,12 @@ export default function Password() {
   const { fetchUser } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    passwordInputRef.current?.focus();
+  }, []);
 
   const handleShowPasswordToggle = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -22,7 +27,8 @@ export default function Password() {
     setLoginData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleNextClick = async () => {
+  const handleNextClick = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       const response = await fetch("http://localhost:3000/users/login", {
         method: "POST",
@@ -93,13 +99,16 @@ export default function Password() {
           <span style={{ fontSize: "15px", marginTop: "40px" }}>
             To continue, first verify it’s you
           </span>
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Enter your password"
-            name="password"
-            value={loginData.password}
-            onChange={handleChange}
-          />
+          <form onSubmit={handleNextClick}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              name="password"
+              value={loginData.password}
+              onChange={handleChange}
+              ref={passwordInputRef}
+            />
+          </form>
           <span style={{ color: "Red" }}>{passwordError}</span>
           <div style={{ marginTop: "10px" }}>
             <input

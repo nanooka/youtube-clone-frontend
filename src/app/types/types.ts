@@ -1,7 +1,9 @@
 export interface Video {
-  id: {
-    videoId: string;
-  };
+  id:
+    | {
+        videoId: string;
+      }
+    | string;
   snippet: {
     title: string;
     channelTitle: string;

@@ -19,6 +19,12 @@ const roboto = Roboto({
   weight: ["400", "500", "700"],
 });
 
+function isVideoIdObject(
+  id: string | { videoId: string }
+): id is { videoId: string } {
+  return (id as { videoId: string }).videoId !== undefined;
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [searchResults, setSearchResults] = useState<Video[]>([]);
@@ -123,7 +129,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         results.map(async (video) => {
           const [channelInfo, videoInfo] = await Promise.all([
             fetchChannelInfo(video.snippet.channelId),
-            fetchVideoInfo(video.id.videoId),
+            fetchVideoInfo(
+              isVideoIdObject(video.id) ? video.id.videoId : video.id
+            ),
           ]);
           return {
             ...video,

@@ -11,6 +11,12 @@ interface LiveContentProps {
   handleVideoClick: (video: Video) => void;
 }
 
+function isVideoIdObject(
+  id: string | { videoId: string }
+): id is { videoId: string } {
+  return (id as { videoId: string }).videoId !== undefined;
+}
+
 const LiveContent: React.FC<LiveContentProps> = ({
   channelLivevideos,
   orderLiveVideo,
@@ -67,7 +73,7 @@ const LiveContent: React.FC<LiveContentProps> = ({
       >
         {channelLivevideos?.map((video) => (
           <div
-            key={video.id.videoId}
+            key={isVideoIdObject(video.id) ? video.id.videoId : video.id}
             style={{ cursor: "pointer" }}
             onClick={() => handleVideoClick(video)}
           >

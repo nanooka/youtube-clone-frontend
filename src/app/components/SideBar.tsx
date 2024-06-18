@@ -168,10 +168,15 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
               <SlClock style={{ width: "21px", height: "21px" }} />
               <span>Watch later</span>
             </li>
-            <li key="liked-videos">
-              <AiOutlineLike style={{ width: "21px", height: "21px" }} />
-              <span>Liked videos</span>
-            </li>
+            <Link
+              href={"/playlist/LL"}
+              style={{ textDecoration: "none", color: "#000" }}
+            >
+              <li key="liked-videos">
+                <AiOutlineLike style={{ width: "21px", height: "21px" }} />
+                <span>Liked videos</span>
+              </li>
+            </Link>
           </ul>
           <hr
             style={{

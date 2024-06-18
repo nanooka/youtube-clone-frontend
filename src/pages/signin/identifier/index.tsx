@@ -31,7 +31,8 @@ export default function SignIn() {
     }
   };
 
-  const handleNextClick = async () => {
+  const handleNextClick = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!loginData.email) {
       setIsEmailValid(false);
     } else {
@@ -77,16 +78,18 @@ export default function SignIn() {
             alignItems: "start",
           }}
         >
-          <input
-            type="text"
-            placeholder="Email or phone"
-            name="email"
-            value={loginData.email}
-            onChange={handleChange}
-            style={{
-              borderColor: isEmailValid ? "#747775" : "red",
-            }}
-          />
+          <form onSubmit={handleNextClick}>
+            <input
+              type="text"
+              placeholder="Email or phone"
+              name="email"
+              value={loginData.email}
+              onChange={handleChange}
+              style={{
+                borderColor: isEmailValid ? "#747775" : "red",
+              }}
+            />
+          </form>
           {!isEmailRegistered && (
             <span style={{ color: "red", marginTop: "10px" }}>
               Email not registered.

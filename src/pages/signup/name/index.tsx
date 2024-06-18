@@ -4,6 +4,7 @@ import GoogleIcon from "../../../app/components/static/google_icon.svg";
 import Image from "next/image";
 import { useForm } from "@/app/context/FormContext";
 import { useRouter } from "next/router";
+import React from "react";
 
 export default function NameStep() {
   const { formData, setFormData, nextStep } = useForm();
@@ -14,7 +15,8 @@ export default function NameStep() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNext = () => {
+  const handleNext = (e: React.FormEvent) => {
+    e.preventDefault();
     nextStep();
     router.push("/signup/birthdaygender");
   };
@@ -45,7 +47,16 @@ export default function NameStep() {
           </h1>
           <p>Enter your name</p>
         </div>
-        <div
+        {/* <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "start",
+            marginTop: "50px",
+          }}
+        > */}
+        <form
+          onSubmit={handleNext}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -84,7 +95,8 @@ export default function NameStep() {
             </button>
             {/* </Link> */}
           </div>
-        </div>
+        </form>
+        {/* </div> */}
         <div
           className="more-div"
           style={{

@@ -39,7 +39,8 @@ export default function UsernameStep() {
     setSelectedEmail(""); // Deselect any selected example email
   };
 
-  const handleNext = () => {
+  const handleNext = (e: React.FormEvent) => {
+    e.preventDefault();
     const email = createCustomEmail ? customEmail : selectedEmail;
     setFormData((prev) => ({ ...prev, email }));
     nextStep();
@@ -107,13 +108,15 @@ export default function UsernameStep() {
               Create your own Gmail address
             </label>
             {createCustomEmail && (
-              <input
-                type="text"
-                value={customEmail}
-                onChange={handleCustomEmailChange}
-                placeholder="Enter your custom email"
-                style={{ marginLeft: "10px", width: "300px" }}
-              />
+              <form onSubmit={handleNext}>
+                <input
+                  type="text"
+                  value={customEmail}
+                  onChange={handleCustomEmailChange}
+                  placeholder="Enter your custom email"
+                  style={{ marginLeft: "10px", width: "300px" }}
+                />
+              </form>
             )}
           </div>
 
@@ -169,16 +172,14 @@ export default function UsernameStep() {
       </div>
 
       <style jsx>{`
-        .name-input {
+        input[type="text"] {
           padding: 20px 15px;
           border-radius: 5px;
           border: 1px solid #747775;
           width: 400px;
-          margin-top: 20px;
+          margin-top: 10px;
         }
-        .name-input:focus,
-        .date-inputs:focus,
-        select:focus {
+        input[type="text"]:focus {
           outline: 1px solid #0b57d0;
         }
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 // import GoogleIcon from "../../app/components/static/google_icon.svg";
 import GoogleIcon from "../../../app/components/static/google_icon.svg";
 import Image from "next/image";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "@/app/context/FormContext";
 import { useRouter } from "next/router";
 
@@ -30,8 +30,9 @@ export default function PasswordStep() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleNext = async () => {
+  const handleNext = async (e: React.FormEvent) => {
     // Basic password validation
+    e.preventDefault();
     if (!password || !confirmPassword) {
       setError("Please fill in both password fields.");
       return;
@@ -103,7 +104,9 @@ export default function PasswordStep() {
             Create a strong password with a mix of letters, numbers and symbols
           </p>
         </div>
-        <div
+
+        <form
+          onSubmit={handleNext}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -148,7 +151,7 @@ export default function PasswordStep() {
             </button>
             {/* </Link> */}
           </div>
-        </div>
+        </form>
         <div
           className="more-div"
           style={{

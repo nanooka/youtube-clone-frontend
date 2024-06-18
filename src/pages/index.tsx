@@ -16,6 +16,12 @@ interface HomeProps {
   searchResults: ExtendedVideo[];
 }
 
+function isVideoIdObject(
+  id: string | { videoId: string }
+): id is { videoId: string } {
+  return (id as { videoId: string }).videoId !== undefined;
+}
+
 export default function Home({ searchResults }: HomeProps) {
   // const [searchResults, setSearchResults] = useState<Video[]>([]);
   const apiKey = process.env.apiKey;
@@ -46,7 +52,9 @@ export default function Home({ searchResults }: HomeProps) {
       results.map(async (video) => {
         const [channelInfo, videoInfo] = await Promise.all([
           fetchChannelInfo(video.snippet.channelId),
-          fetchVideoInfo(video.id.videoId),
+          fetchVideoInfo(
+            isVideoIdObject(video.id) ? video.id.videoId : video.id
+          ),
         ]);
         return {
           ...video,
@@ -106,7 +114,7 @@ export default function Home({ searchResults }: HomeProps) {
         {searchResults && searchResults.length > 0 ? (
           searchResults.map((video) => (
             <li
-              key={video.id.videoId}
+              key={isVideoIdObject(video.id) ? video.id.videoId : video.id}
               style={{
                 // display: "flex",
                 // flexDirection: "column",
@@ -302,7 +310,7 @@ export default function Home({ searchResults }: HomeProps) {
           >
             {randomVideos.map((video) => (
               <div
-                key={video.id.videoId}
+                key={isVideoIdObject(video.id) ? video.id.videoId : video.id}
                 style={{
                   cursor: "pointer",
                   maxWidth: "400px",
