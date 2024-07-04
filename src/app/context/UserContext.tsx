@@ -7,8 +7,15 @@ import {
   ReactNode,
 } from "react";
 import { useLogin } from "./LoginContext";
+import LikedVideos from "@/pages/playlist/LL";
+import WatchLaterVideos from "@/pages/playlist/WL";
 
 interface LikedVideo {
+  userID: string;
+  id: string;
+}
+
+interface WatchLaterVideo {
   userID: string;
   id: string;
 }
@@ -25,12 +32,14 @@ interface User {
   gender: string;
   userDate: number;
   likedVideos: LikedVideo[];
+  watchLaterVideos: WatchLaterVideo[];
 }
 
 interface UserContextProps {
   user: User | null;
   fetchUser: (id: string) => void;
   fetchLikedVideos: (userID: string) => void;
+  fetchWatchLaterVideos: (userID: string) => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -88,16 +97,48 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchWatchLaterVideos = async () => {
+    try {
+      const requestData = {
+        userID: loginData.userID,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${loginData.token}`,
+      };
+      const response = await fetch(
+        `http://localhost:3000/watch-later-videos/user-watch-later-videos`,
+        {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const watchLaterVideos = await response.json();
+      setUser((prevUser) =>
+        prevUser ? { ...prevUser, watchLaterVideos } : null
+      );
+    } catch (error) {
+      console.error("Error fetching liked videos", error);
+    }
+  };
+
   useEffect(() => {
     if (loginData.token) {
       fetchLikedVideos();
+      fetchWatchLaterVideos();
     }
-  }, [loginData.token]);
+  }, [loginData.token, LikedVideos, WatchLaterVideos]);
 
   console.log("user context", user);
 
   return (
-    <UserContext.Provider value={{ user, fetchUser, fetchLikedVideos }}>
+    <UserContext.Provider
+      value={{ user, fetchUser, fetchLikedVideos, fetchWatchLaterVideos }}
+    >
       {children}
     </UserContext.Provider>
   );

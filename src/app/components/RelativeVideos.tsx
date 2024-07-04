@@ -88,7 +88,7 @@ export default function RelativeVideos({
                   style={{ display: "flex", gap: "10px", marginTop: "10px" }}
                 >
                   <Link
-                    href={`/watch?v=${
+                    href={`/watch/${
                       isVideoIdObject(video.id) ? video.id.videoId : video.id
                     }`}
                   >

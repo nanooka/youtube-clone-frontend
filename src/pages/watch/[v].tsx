@@ -67,6 +67,7 @@ export default function WatchPage({ searchResults }: watchProps) {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [comments, setComments] = useState<CommentThread[]>([]);
   const [isLiked, setIsLiked] = useState(false);
+  const [showSigninContainer, setShowSigninContainer] = useState(false);
 
   //
   // const [channelId, setChannelId] = useState<string | undefined>(undefined);
@@ -149,7 +150,36 @@ export default function WatchPage({ searchResults }: watchProps) {
       setIsLiked(isVideoLiked);
     }
   }, [user, videoInfo, loginData]);
-  console.log(isLiked);
+  // console.log(isLiked);
+
+  const handleSubscribe = async () => {
+    if (loginData.userID !== "" && loginData.token !== "" && videoInfo) {
+      try {
+        const requestData = {
+          userID: loginData.userID,
+          channelID: channelId,
+        };
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${loginData.token}`,
+        };
+        const response = await fetch("http://localhost:3000/subscriptions", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        console.log("subscribe clicked", response);
+      } catch (error) {
+        console.error("Could not subscribe", error);
+      }
+    } else {
+      setShowSigninContainer(true);
+    }
+  };
+  console.log(showSigninContainer);
 
   const handleLikeVideo = async () => {
     if (loginData && videoInfo) {
@@ -300,7 +330,25 @@ export default function WatchPage({ searchResults }: watchProps) {
                   )}
                 </span>
               </div>
-              <button className="subscribe-btn">Subscribe</button>
+
+              <button className="subscribe-btn" onClick={handleSubscribe}>
+                Subscribe
+                {showSigninContainer && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      backgroundColor: "#fff",
+                      color: "#000",
+                      border: "1px solid #000",
+                      padding: "10px",
+                    }}
+                  >
+                    <p>Want to subscribe to this channel?</p>
+                    <span>Sign in to subscribe to this channel.</span>
+                  </div>
+                )}
+              </button>
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
               <div style={{ display: "flex" }}>
@@ -416,6 +464,7 @@ export default function WatchPage({ searchResults }: watchProps) {
           padding: 10px 14px;
           cursor: pointer;
           margin-left: 10px;
+          position: relative;
         }
         .subscribe-btn:hover {
           opacity: 0.85;

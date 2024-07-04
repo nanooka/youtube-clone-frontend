@@ -12,9 +12,12 @@ import { BiDotsVerticalRounded } from "react-icons/bi";
 import { IoMdPlay } from "react-icons/io";
 import { PiShuffle } from "react-icons/pi";
 
-export default function LikedVideos() {
+export default function WatchLater() {
   const { user } = useUser();
-  const [likedVideosDetails, setLikedVideosDetails] = useState<Video[]>([]);
+  //   const [likedVideosDetails, setLikedVideosDetails] = useState<Video[]>([]);
+  const [watchLaterVideosDetails, setWatchLaterVideosDetails] = useState<
+    Video[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   function isVideoIdObject(
@@ -22,13 +25,12 @@ export default function LikedVideos() {
   ): id is { videoId: string } {
     return (id as { videoId: string }).videoId !== undefined;
   }
-  console.log("user in LL", user);
 
   useEffect(() => {
-    const fetchLikedVideosDetails = async () => {
-      if (user && user.likedVideos.length > 0) {
+    const fetchWatchLaterVideosDetails = async () => {
+      if (user && user.watchLaterVideos.length > 0) {
         try {
-          const videoIDs = user.likedVideos
+          const videoIDs = user.watchLaterVideos
             .map((video) =>
               isVideoIdObject(video.id) ? video.id.videoId : video.id
             )
@@ -37,9 +39,9 @@ export default function LikedVideos() {
           const response = await axios.get(
             `http://localhost:3000/api/youtube/videos/${videoIDs}?${apiKey}&part=snippet,statistics,player,contentDetails`
           );
-          setLikedVideosDetails(response.data.items);
+          setWatchLaterVideosDetails(response.data.items);
         } catch (error) {
-          console.error("Error fetching liked videos details:", error);
+          console.error("Error fetching watch later videos details:", error);
         } finally {
           setLoading(false);
         }
@@ -47,13 +49,13 @@ export default function LikedVideos() {
         setLoading(false);
       }
     };
-    fetchLikedVideosDetails();
+    fetchWatchLaterVideosDetails();
   }, [user]);
 
   if (!user) {
     return (
       <div style={{ marginTop: "120px", marginLeft: "120px" }}>
-        Please log in to see your liked videos.
+        Please log in to see your watch later videos.
       </div>
     );
   }
@@ -61,20 +63,20 @@ export default function LikedVideos() {
   if (loading) {
     return (
       <div style={{ marginTop: "120px", marginLeft: "120px" }}>
-        Loading liked videos...
+        Loading watch later videos...
       </div>
     );
   }
 
-  if (likedVideosDetails.length === 0) {
+  if (watchLaterVideosDetails.length === 0) {
     return (
       <div style={{ marginTop: "120px", marginLeft: "120px" }}>
-        You have no liked videos.
+        You have no watch later videos.
       </div>
     );
   }
 
-  console.log("likedVideosDetails", likedVideosDetails);
+  console.log("watchLaterVideosDetails", watchLaterVideosDetails);
 
   return (
     <div style={{ margin: "100px 20px 0 140px" }}>
@@ -91,7 +93,7 @@ export default function LikedVideos() {
             overflow: "hidden",
             padding: "20px 20px 0 36px",
             // display: "inline-block",
-            backgroundImage: `url(${likedVideosDetails[0].snippet.thumbnails.high.url})`,
+            backgroundImage: `url(${watchLaterVideosDetails[0].snippet.thumbnails.high.url})`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -119,7 +121,7 @@ export default function LikedVideos() {
             // style={{ zIndex: 2, position: "relative" }}
           >
             <Image
-              src={likedVideosDetails[0].snippet.thumbnails.high.url}
+              src={watchLaterVideosDetails[0].snippet.thumbnails.high.url}
               width={320}
               height={180}
               alt="image"
@@ -142,7 +144,7 @@ export default function LikedVideos() {
               // alignItems: "start",
             }}
           >
-            <h2>Liked videos</h2>
+            <h2>watch later</h2>
             <span>{`${user.firstName} ${user.lastName}`}</span>
             <div
               style={{
@@ -153,7 +155,7 @@ export default function LikedVideos() {
                 margin: "5px 0 20px 0",
               }}
             >
-              <span>{user.likedVideos.length} videos</span>
+              <span>{user.watchLaterVideos.length} videos</span>
               <span>No views</span>
             </div>
             <div style={{ display: "flex", gap: "10px" }}>
@@ -199,7 +201,7 @@ export default function LikedVideos() {
               }
             }
           >
-            {likedVideosDetails.map((video, index) => (
+            {watchLaterVideosDetails.map((video, index) => (
               <li
                 key={isVideoIdObject(video.id) ? video.id.videoId : video.id}
                 // style={{ listStyle: "none" }}

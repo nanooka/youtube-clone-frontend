@@ -8,11 +8,12 @@ import { useUser } from "@/app/context/UserContext";
 
 export default function Password() {
   const { loginData, setLoginData } = useLogin();
-  const { fetchUser } = useUser();
+  const { user, fetchUser } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  console.log("pass", user);
 
   useEffect(() => {
     passwordInputRef.current?.focus();
