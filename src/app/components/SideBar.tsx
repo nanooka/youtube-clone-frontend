@@ -17,17 +17,60 @@ import { SlClock } from "react-icons/sl";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useUser } from "../context/UserContext";
+import { useLogin } from "../context/LoginContext";
+import Subscriptions from "@/pages/feed/subscriptions";
+import { useEffect, useState } from "react";
+// import { ChannelInfo } from "../types/types";
 
 interface SideBarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
 }
 
+interface Channel {
+  channelID: string;
+  channelImage: string;
+  channelTitle: string;
+}
+
 export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
   const router = useRouter();
   const currentRoute = router.pathname;
 
+  const { user } = useUser();
+  const { loginData } = useLogin();
+  const [channels, setChannels] = useState<Channel[]>([]);
+
   const isActive = (route: string) => currentRoute === route;
+
+  useEffect(() => {
+    if (user?.subscriptions) {
+      const fetchChannels = async () => {
+        const channelData = await Promise.all(
+          user.subscriptions.map(
+            async (subscription: { channelID: string }) => {
+              const response = await fetch(
+                `http://localhost:3000/api/youtube/channels/${subscription.channelID}`
+              );
+              const data = await response.json();
+              const channelInfo = data.items[0]?.snippet;
+              return {
+                channelID: subscription.channelID,
+                channelImage: channelInfo?.thumbnails?.medium?.url || "",
+                channelTitle: channelInfo?.title || "Unknown Channel",
+              };
+            }
+          )
+        );
+        setChannels(channelData);
+      };
+
+      fetchChannels();
+    }
+  }, [user]);
+
+  console.log("from sidebar", channels);
 
   return (
     <>
@@ -250,6 +293,36 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
               opacity: 0.3,
             }}
           ></hr>
+
+          {/* {loginData.token && ( */}
+          <div>
+            <span
+              style={{ fontSize: "15px", fontWeight: "600", marginLeft: "8px" }}
+            >
+              Subscriptions
+            </span>
+            <ul>
+              {channels?.map((channel) => (
+                <Link
+                  href={`/channel/${channel.channelID}`}
+                  key={channel.channelID}
+                  style={{ textDecoration: "none", color: "#000" }}
+                >
+                  <li key={channel.channelID}>
+                    <Image
+                      src={channel.channelImage}
+                      alt="channel-image"
+                      width={30}
+                      height={30}
+                      style={{ borderRadius: "50%" }}
+                    />
+                    <span>{channel.channelTitle}</span>
+                  </li>
+                </Link>
+              ))}
+            </ul>
+          </div>
+          {/* )} */}
         </nav>
         <style jsx>{`
           .sidebar {

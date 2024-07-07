@@ -7,8 +7,8 @@ import {
   ReactNode,
 } from "react";
 import { useLogin } from "./LoginContext";
-import LikedVideos from "@/pages/playlist/LL";
-import WatchLaterVideos from "@/pages/playlist/WL";
+// import LikedVideos from "@/pages/playlist/LL";
+// import WatchLaterVideos from "@/pages/playlist/WL";
 
 interface LikedVideo {
   userID: string;
@@ -18,6 +18,11 @@ interface LikedVideo {
 interface WatchLaterVideo {
   userID: string;
   id: string;
+}
+
+interface Subscription {
+  userID: string;
+  channelID: string;
 }
 
 interface User {
@@ -33,13 +38,15 @@ interface User {
   userDate: number;
   likedVideos: LikedVideo[];
   watchLaterVideos: WatchLaterVideo[];
+  subscriptions: Subscription[];
 }
 
 interface UserContextProps {
   user: User | null;
   fetchUser: (id: string) => void;
-  fetchLikedVideos: (userID: string) => void;
-  fetchWatchLaterVideos: (userID: string) => void;
+  fetchLikedVideos: () => void;
+  fetchWatchLaterVideos: () => void;
+  fetchSubscriptions: () => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -126,18 +133,52 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchSubscriptions = async () => {
+    try {
+      const requestData = {
+        userID: loginData.userID,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${loginData.token}`,
+      };
+      const response = await fetch(
+        `http://localhost:3000/subscriptions/user-subscriptions`,
+        {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const subscriptions = await response.json();
+      setUser((prevUser) => (prevUser ? { ...prevUser, subscriptions } : null));
+    } catch (error) {
+      console.error("Error fetching subscriptions", error);
+    }
+  };
+
   useEffect(() => {
     if (loginData.token) {
       fetchLikedVideos();
       fetchWatchLaterVideos();
+      fetchSubscriptions();
     }
-  }, [loginData.token, LikedVideos, WatchLaterVideos]);
+  }, [loginData.token]);
 
   console.log("user context", user);
 
   return (
     <UserContext.Provider
-      value={{ user, fetchUser, fetchLikedVideos, fetchWatchLaterVideos }}
+      value={{
+        user,
+        fetchUser,
+        fetchLikedVideos,
+        fetchWatchLaterVideos,
+        fetchSubscriptions,
+      }}
     >
       {children}
     </UserContext.Provider>

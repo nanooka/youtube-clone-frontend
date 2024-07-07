@@ -11,6 +11,7 @@ import ChannelVideos from "@/app/components/ChannelVideos";
 import ChannelPlaylists from "@/app/components/ChannelPlaylists";
 import ChannelLiveVideos from "@/app/components/ChannelLiveVideos";
 import ChannelSearchedVideos from "@/app/components/ChannelSearchedVideos";
+import { useLogin } from "@/app/context/LoginContext";
 
 export default function ChannelPage() {
   const apiUrl = "http://localhost:3000/api/youtube";
@@ -26,9 +27,18 @@ export default function ChannelPage() {
   const [activeTab, setActiveTab] = useState<string>("Home");
   const [isInputFocused, setIsInputFocused] = useState(false);
 
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [showSigninContainer, setShowSigninContainer] = useState(false);
+  const signinContainerRef = useRef<HTMLDivElement>(null);
+
+  const [unsubscribeContainer, setUnsubscribeContainer] = useState(false);
+  const unsubscribeContainerRef = useRef<HTMLDivElement>(null);
+
   const searchIconRef = useRef<HTMLDivElement | null>(null);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const { loginData } = useLogin();
 
   useEffect(() => {
     if (isInputFocused && inputRef.current) {
@@ -116,6 +126,61 @@ export default function ChannelPage() {
 
   // console.log("searchQuery", searchQuery);
 
+  const handleSubscribe = async () => {
+    if (loginData.userID !== "" && loginData.token !== "") {
+      try {
+        const requestData = {
+          userID: loginData.userID,
+          channelID: channelId,
+        };
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${loginData.token}`,
+        };
+        const response = await fetch("http://localhost:3000/subscriptions", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        setIsSubscribed(true);
+        console.log("subscribe clicked", response);
+      } catch (error) {
+        console.error("Could not subscribe", error);
+      }
+    } else {
+      setShowSigninContainer(true);
+    }
+  };
+
+  const handleUnsubscribe = async () => {
+    try {
+      const requestData = {
+        userID: loginData.userID,
+        channelID: channelId,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${loginData.token}`,
+      };
+      const response = await fetch("http://localhost:3000/subscriptions", {
+        method: "DELETE",
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      setIsSubscribed(false);
+      setUnsubscribeContainer(false);
+      console.log("unsubscribe clicked", response);
+    } catch (error) {
+      console.error("Could not unsubscribe", error);
+    }
+  };
+
   return (
     <div
       style={{ marginTop: "70px", marginLeft: "130px", marginRight: "100px" }}
@@ -202,6 +267,7 @@ export default function ChannelPage() {
                   style={{ width: "26px", height: "26px" }}
                 />
               </div>
+
               <button className="subscribe-btn">Subscribe</button>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 // import ReactPlayer from "react-player";
 import Image from "next/image";
@@ -13,7 +13,7 @@ import {
   Video,
 } from "@/app/types/types";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
-import { BiDislike } from "react-icons/bi";
+import { BiDislike, BiSolidBellRing } from "react-icons/bi";
 import { formatLikeCount } from "@/app/formulas/formatLikeCount";
 import { PiDotsThreeBold, PiShareFatLight } from "react-icons/pi";
 import { LiaDownloadSolid } from "react-icons/lia";
@@ -23,6 +23,8 @@ import CommentSection from "@/app/components/CommentSection";
 import RelativeVideos from "@/app/components/RelativeVideos";
 import { useUser } from "@/app/context/UserContext";
 import { useLogin } from "@/app/context/LoginContext";
+import { IoIosArrowDown } from "react-icons/io";
+import UnsubscribeICon from "@/app/components/static/unsubscribe.svg";
 
 function formatDescription(description: string): string {
   const urlRegex = /(\bhttps?:\/\/[^\s]+)/g;
@@ -66,8 +68,15 @@ export default function WatchPage({ searchResults }: watchProps) {
   const [channelInfo, setChannelInfo] = useState<ChannelInfo | null>(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [comments, setComments] = useState<CommentThread[]>([]);
+
   const [isLiked, setIsLiked] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
   const [showSigninContainer, setShowSigninContainer] = useState(false);
+  const signinContainerRef = useRef<HTMLDivElement>(null);
+
+  const [unsubscribeContainer, setUnsubscribeContainer] = useState(false);
+  const unsubscribeContainerRef = useRef<HTMLDivElement>(null);
 
   //
   // const [channelId, setChannelId] = useState<string | undefined>(undefined);
@@ -150,7 +159,50 @@ export default function WatchPage({ searchResults }: watchProps) {
       setIsLiked(isVideoLiked);
     }
   }, [user, videoInfo, loginData]);
-  // console.log(isLiked);
+
+  useEffect(() => {
+    if (user && channelId) {
+      const isChannelSubscribed = user.subscriptions.some(
+        (subscribedChannel) =>
+          subscribedChannel.userID === loginData.userID &&
+          subscribedChannel.channelID === channelId
+      );
+      setIsSubscribed(isChannelSubscribed);
+    }
+  }, [channelId, loginData.userID, user]);
+  console.log("isSubscribed", isSubscribed);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        signinContainerRef.current &&
+        !signinContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowSigninContainer(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        unsubscribeContainerRef.current &&
+        !unsubscribeContainerRef.current.contains(event.target as Node)
+      ) {
+        setUnsubscribeContainer(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleSubscribe = async () => {
     if (loginData.userID !== "" && loginData.token !== "" && videoInfo) {
@@ -171,6 +223,7 @@ export default function WatchPage({ searchResults }: watchProps) {
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
+        setIsSubscribed(true);
         console.log("subscribe clicked", response);
       } catch (error) {
         console.error("Could not subscribe", error);
@@ -179,7 +232,32 @@ export default function WatchPage({ searchResults }: watchProps) {
       setShowSigninContainer(true);
     }
   };
-  console.log(showSigninContainer);
+
+  const handleUnsubscribe = async () => {
+    try {
+      const requestData = {
+        userID: loginData.userID,
+        channelID: channelId,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${loginData.token}`,
+      };
+      const response = await fetch("http://localhost:3000/subscriptions", {
+        method: "DELETE",
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      setIsSubscribed(false);
+      setUnsubscribeContainer(false);
+      console.log("unsubscribe clicked", response);
+    } catch (error) {
+      console.error("Could not unsubscribe", error);
+    }
+  };
 
   const handleLikeVideo = async () => {
     if (loginData && videoInfo) {
@@ -330,25 +408,83 @@ export default function WatchPage({ searchResults }: watchProps) {
                   )}
                 </span>
               </div>
+              <div style={{ position: "relative" }}>
+                {!isSubscribed ? (
+                  <button className="subscribe-btn" onClick={handleSubscribe}>
+                    Subscribe
+                  </button>
+                ) : (
+                  <button
+                    className="subscribed-btn"
+                    // onClick={handleUnsubscribe}
+                    onClick={() => setUnsubscribeContainer(true)}
+                  >
+                    <BiSolidBellRing /> Subscribed <IoIosArrowDown />
+                  </button>
+                )}
 
-              <button className="subscribe-btn" onClick={handleSubscribe}>
-                Subscribe
                 {showSigninContainer && (
                   <div
+                    ref={signinContainerRef}
                     style={{
                       position: "absolute",
-                      top: 0,
+                      top: "-140px",
                       backgroundColor: "#fff",
                       color: "#000",
-                      border: "1px solid #000",
                       padding: "10px",
+                      boxShadow:
+                        "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+                      width: "250px",
+                      zIndex: 10,
                     }}
                   >
                     <p>Want to subscribe to this channel?</p>
-                    <span>Sign in to subscribe to this channel.</span>
+                    <p style={{ color: "#676767" }}>
+                      Sign in to subscribe to this channel.
+                    </p>
+                    <button className="signin-btn">
+                      <Link
+                        href={"/signin/identifier"}
+                        style={{ textDecoration: "none", color: "#065fd4" }}
+                      >
+                        Sign in
+                      </Link>
+                    </button>
                   </div>
                 )}
-              </button>
+
+                {unsubscribeContainer && (
+                  <div
+                    ref={unsubscribeContainerRef}
+                    style={{
+                      position: "absolute",
+                      top: "-60px",
+                      backgroundColor: "#fff",
+                      color: "#000",
+                      // padding: "10px",
+                      boxShadow:
+                        "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+                      width: "250px",
+                      zIndex: 10,
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <button
+                      onClick={handleUnsubscribe}
+                      className="unsubscribe-btn"
+                    >
+                      <Image
+                        src={UnsubscribeICon}
+                        alt="unsubscribe"
+                        width={20}
+                        height={20}
+                      />{" "}
+                      <p>Unsubscribe</p>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
               <div style={{ display: "flex" }}>
@@ -464,11 +600,51 @@ export default function WatchPage({ searchResults }: watchProps) {
           padding: 10px 14px;
           cursor: pointer;
           margin-left: 10px;
-          position: relative;
         }
         .subscribe-btn:hover {
           opacity: 0.85;
         }
+        .subscribed-btn {
+          font-size: 15px;
+          color: black;
+          background-color: #f2f2f2;
+          border: none;
+          border-radius: 20px;
+          padding: 10px 14px;
+          cursor: pointer;
+          margin-left: 10px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .subscribed-btn:hover,
+        .unsubscribe-btn:hover {
+          background-color: #e5e5e5;
+        }
+        .unsubscribe-btn {
+          color: black;
+          background-color: #f2f2f2;
+          border: none;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          cursor: pointer;
+          font-size: 15px;
+          // padding: 10px 14px;
+          padding: 6px;
+          width: 100%;
+        }
+        .signin-btn {
+          background-color: transparent;
+          border: none;
+          padding: 8px;
+          border-radius: 20px;
+          cursor: pointer;
+        }
+        .signin-btn:hover {
+          background-color: #def1ff;
+        }
+
         .like,
         .dislike,
         .share,
