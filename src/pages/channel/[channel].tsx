@@ -12,6 +12,11 @@ import ChannelPlaylists from "@/app/components/ChannelPlaylists";
 import ChannelLiveVideos from "@/app/components/ChannelLiveVideos";
 import ChannelSearchedVideos from "@/app/components/ChannelSearchedVideos";
 import { useLogin } from "@/app/context/LoginContext";
+import { BiSolidBellRing } from "react-icons/bi";
+import { IoIosArrowDown } from "react-icons/io";
+import UnsubscribeICon from "@/app/components/static/unsubscribe.svg";
+import Link from "next/link";
+import { useUser } from "@/app/context/UserContext";
 
 export default function ChannelPage() {
   const apiUrl = "http://localhost:3000/api/youtube";
@@ -39,6 +44,7 @@ export default function ChannelPage() {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const { loginData } = useLogin();
+  const { user } = useUser();
 
   useEffect(() => {
     if (isInputFocused && inputRef.current) {
@@ -125,6 +131,50 @@ export default function ChannelPage() {
   // };
 
   // console.log("searchQuery", searchQuery);
+
+  useEffect(() => {
+    if (user && channelId) {
+      const isChannelSubscribed = user.subscriptions.some(
+        (subscribedChannel) =>
+          subscribedChannel.userID === loginData.userID &&
+          subscribedChannel.channelID === channelId
+      );
+      setIsSubscribed(isChannelSubscribed);
+    }
+  }, [channelId, loginData.userID, user]);
+  console.log("isSubscribed", isSubscribed);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        signinContainerRef.current &&
+        !signinContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowSigninContainer(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        unsubscribeContainerRef.current &&
+        !unsubscribeContainerRef.current.contains(event.target as Node)
+      ) {
+        setUnsubscribeContainer(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleSubscribe = async () => {
     if (loginData.userID !== "" && loginData.token !== "") {
@@ -268,7 +318,83 @@ export default function ChannelPage() {
                 />
               </div>
 
-              <button className="subscribe-btn">Subscribe</button>
+              <div style={{ position: "relative" }}>
+                {!isSubscribed ? (
+                  <button className="subscribe-btn" onClick={handleSubscribe}>
+                    Subscribe
+                  </button>
+                ) : (
+                  <button
+                    className="subscribed-btn"
+                    // onClick={handleUnsubscribe}
+                    onClick={() => setUnsubscribeContainer(true)}
+                  >
+                    <BiSolidBellRing /> Subscribed <IoIosArrowDown />
+                  </button>
+                )}
+
+                {showSigninContainer && (
+                  <div
+                    ref={signinContainerRef}
+                    style={{
+                      position: "absolute",
+                      top: "-140px",
+                      backgroundColor: "#fff",
+                      color: "#000",
+                      padding: "10px",
+                      boxShadow:
+                        "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+                      width: "250px",
+                      zIndex: 10,
+                    }}
+                  >
+                    <p>Want to subscribe to this channel?</p>
+                    <p style={{ color: "#676767" }}>
+                      Sign in to subscribe to this channel.
+                    </p>
+                    <button className="signin-btn">
+                      <Link
+                        href={"/signin/identifier"}
+                        style={{ textDecoration: "none", color: "#065fd4" }}
+                      >
+                        Sign in
+                      </Link>
+                    </button>
+                  </div>
+                )}
+
+                {unsubscribeContainer && (
+                  <div
+                    ref={unsubscribeContainerRef}
+                    style={{
+                      position: "absolute",
+                      top: "-60px",
+                      backgroundColor: "#fff",
+                      color: "#000",
+                      // padding: "10px",
+                      boxShadow:
+                        "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
+                      width: "250px",
+                      zIndex: 10,
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <button
+                      onClick={handleUnsubscribe}
+                      className="unsubscribe-btn"
+                    >
+                      <Image
+                        src={UnsubscribeICon}
+                        alt="unsubscribe"
+                        width={20}
+                        height={20}
+                      />{" "}
+                      <p>Unsubscribe</p>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -378,6 +504,36 @@ export default function ChannelPage() {
         }
         .subscribe-btn:hover {
           opacity: 0.85;
+        }
+        .subscribed-btn {
+          font-size: 15px;
+          color: black;
+          background-color: #f2f2f2;
+          border: none;
+          border-radius: 20px;
+          padding: 10px 14px;
+          cursor: pointer;
+          margin-left: 10px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .subscribed-btn:hover,
+        .unsubscribe-btn:hover {
+          background-color: #e5e5e5;
+        }
+        .unsubscribe-btn {
+          color: black;
+          background-color: #f2f2f2;
+          border: none;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          cursor: pointer;
+          font-size: 15px;
+          // padding: 10px 14px;
+          padding: 6px;
+          width: 100%;
         }
         .search-input:focus {
           outline: none;

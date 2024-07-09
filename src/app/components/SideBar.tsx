@@ -294,35 +294,39 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
             }}
           ></hr>
 
-          {/* {loginData.token && ( */}
-          <div>
-            <span
-              style={{ fontSize: "15px", fontWeight: "600", marginLeft: "8px" }}
-            >
-              Subscriptions
-            </span>
-            <ul>
-              {channels?.map((channel) => (
-                <Link
-                  href={`/channel/${channel.channelID}`}
-                  key={channel.channelID}
-                  style={{ textDecoration: "none", color: "#000" }}
-                >
-                  <li key={channel.channelID}>
-                    <Image
-                      src={channel.channelImage}
-                      alt="channel-image"
-                      width={30}
-                      height={30}
-                      style={{ borderRadius: "50%" }}
-                    />
-                    <span>{channel.channelTitle}</span>
-                  </li>
-                </Link>
-              ))}
-            </ul>
-          </div>
-          {/* )} */}
+          {loginData.token && (
+            <div>
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  marginLeft: "8px",
+                }}
+              >
+                Subscriptions
+              </span>
+              <ul>
+                {channels?.map((channel) => (
+                  <Link
+                    href={`/channel/${channel.channelID}`}
+                    key={channel.channelID}
+                    style={{ textDecoration: "none", color: "#000" }}
+                  >
+                    <li key={channel.channelID}>
+                      <Image
+                        src={channel.channelImage}
+                        alt="channel-image"
+                        width={30}
+                        height={30}
+                        style={{ borderRadius: "50%" }}
+                      />
+                      <span>{channel.channelTitle}</span>
+                    </li>
+                  </Link>
+                ))}
+              </ul>
+            </div>
+          )}
         </nav>
         <style jsx>{`
           .sidebar {
