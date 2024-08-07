@@ -35,7 +35,7 @@ export default function LikedVideos() {
             .join(",");
           const apiKey = process.env.apiKey;
           const response = await axios.get(
-            `http://localhost:3000/api/youtube/videos/${videoIDs}?${apiKey}&part=snippet,statistics,player,contentDetails`
+            `http://localhost:5000/api/youtube/videos/${videoIDs}?${apiKey}&part=snippet,statistics,player,contentDetails`
           );
           setLikedVideosDetails(response.data.items);
         } catch (error) {

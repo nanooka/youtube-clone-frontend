@@ -36,7 +36,7 @@
 //     const fetchRandomVideos = async () => {
 //       try {
 //         const response = await axios.get(
-//           `http://localhost:3000/api/youtube/search`
+//           `http://localhost:5000/api/youtube/search`
 //         );
 //         setNextPageToken(response.data.nextPageToken);
 //         await handleRandomVideos(response.data.items);
@@ -74,7 +74,7 @@
 //   const fetchChannelInfo = async (channelId: string) => {
 //     try {
 //       const response = await axios.get(
-//         `http://localhost:3000/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
+//         `http://localhost:5000/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
 //       );
 //       return response.data.items[0];
 //     } catch (error) {
@@ -86,7 +86,7 @@
 //   const fetchVideoInfo = async (videoId: string) => {
 //     try {
 //       const response = await axios.get(
-//         `http://localhost:3000/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
+//         `http://localhost:5000/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
 //       );
 //       return response.data.items[0];
 //     } catch (error) {
@@ -111,7 +111,7 @@
 
 //     try {
 //       const response = await axios.get(
-//         `http://localhost:3000/api/youtube/search`,
+//         `http://localhost:5000/api/youtube/search`,
 //         {
 //           params: { pageToken: nextPageToken },
 //         }
@@ -505,7 +505,7 @@ export default function Home({ searchResults }: HomeProps) {
     const fetchRandomVideos = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/youtube/search`
+          `http://localhost:5000/api/youtube/search`
         );
         setNextPageToken(response.data.nextPageToken);
         await handleRandomVideos(response.data.items);
@@ -543,7 +543,7 @@ export default function Home({ searchResults }: HomeProps) {
   const fetchChannelInfo = async (channelId: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
+        `http://localhost:5000/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
       );
       return response.data.items[0];
     } catch (error) {
@@ -555,7 +555,7 @@ export default function Home({ searchResults }: HomeProps) {
   const fetchVideoInfo = async (videoId: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
+        `http://localhost:5000/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
       );
       return response.data.items[0];
     } catch (error) {
@@ -577,7 +577,7 @@ export default function Home({ searchResults }: HomeProps) {
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/search`,
+        `http://localhost:5000/api/youtube/search`,
         {
           params: { pageToken: nextPageToken },
         }

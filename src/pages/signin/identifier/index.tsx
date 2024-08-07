@@ -16,7 +16,7 @@ export default function SignIn() {
 
   const checkEmailRegistered = async (email: string) => {
     try {
-      const response = await fetch("http://localhost:3000/users/check-email", {
+      const response = await fetch("http://localhost:5000/users/check-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

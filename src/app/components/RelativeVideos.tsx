@@ -39,7 +39,7 @@ export default function RelativeVideos({
   const hydrate = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/search?query=${videoInfo?.snippet.channelTitle}`
+        `http://localhost:5000/api/youtube/search?query=${videoInfo?.snippet.channelTitle}`
       );
       // console.log("relativeeeeeeeeeeee", response.data.items);
       setRelativeVideos(response.data.items);
@@ -54,7 +54,7 @@ export default function RelativeVideos({
   const fetchVideoInfo = async (videoId: string | string[]) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/videos/${videoId}?${apiKey}&part=snippet,statistics,player,contentDetails`
+        `http://localhost:5000/api/youtube/videos/${videoId}?${apiKey}&part=snippet,statistics,player,contentDetails`
       );
       // console.log(" asasasasas", response.data.items[0]);
       return response.data.items[0];

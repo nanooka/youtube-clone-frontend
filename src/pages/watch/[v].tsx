@@ -89,7 +89,7 @@ export default function WatchPage({ searchResults }: watchProps) {
   const hydrate = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/videos/${v}?${apiKey}&part="snippet,statistics,player,contentDetails"`
+        `http://localhost:5000/api/youtube/videos/${v}?${apiKey}&part="snippet,statistics,player,contentDetails"`
       );
       setVideoInfo(response.data.items[0]);
     } catch (error) {
@@ -102,7 +102,7 @@ export default function WatchPage({ searchResults }: watchProps) {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/comments/${v}`
+        `http://localhost:5000/api/youtube/comments/${v}`
       );
       setComments(response.data.items);
     } catch (error) {
@@ -116,7 +116,7 @@ export default function WatchPage({ searchResults }: watchProps) {
   const fetchChannel = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/youtube/channels/${channelId}?${apiKey}&part="snippet,id,statistics,player,contentDetails"`
+        `http://localhost:5000/api/youtube/channels/${channelId}?${apiKey}&part="snippet,id,statistics,player,contentDetails"`
       );
       // console.log("response", response.data.items[0]);
       setChannelInfo(response.data.items[0]);
@@ -215,7 +215,7 @@ export default function WatchPage({ searchResults }: watchProps) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${loginData.token}`,
         };
-        const response = await fetch("http://localhost:3000/subscriptions", {
+        const response = await fetch("http://localhost:5000/subscriptions", {
           method: "POST",
           headers: headers,
           body: JSON.stringify(requestData),
@@ -243,7 +243,7 @@ export default function WatchPage({ searchResults }: watchProps) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${loginData.token}`,
       };
-      const response = await fetch("http://localhost:3000/subscriptions", {
+      const response = await fetch("http://localhost:5000/subscriptions", {
         method: "DELETE",
         headers: headers,
         body: JSON.stringify(requestData),
@@ -271,7 +271,7 @@ export default function WatchPage({ searchResults }: watchProps) {
           Authorization: `Bearer ${loginData.token}`,
         };
 
-        const response = await fetch("http://localhost:3000/liked-videos", {
+        const response = await fetch("http://localhost:5000/liked-videos", {
           method: "POST",
           headers: headers,
           body: JSON.stringify(requestData),
@@ -299,7 +299,7 @@ export default function WatchPage({ searchResults }: watchProps) {
           Authorization: `Bearer ${loginData.token}`,
         };
 
-        const response = await fetch("http://localhost:3000/liked-videos", {
+        const response = await fetch("http://localhost:5000/liked-videos", {
           method: "DELETE",
           headers: headers,
           body: JSON.stringify(requestData),

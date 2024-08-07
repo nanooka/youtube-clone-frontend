@@ -23,7 +23,7 @@ const ChannelSearchedVideos: React.FC<ChannelSearchedVideosProps> = ({
   searchQuery,
   handleVideoClick,
 }) => {
-  const apiUrl = "http://localhost:3000/api/youtube";
+  const apiUrl = "http://localhost:5000/api/youtube";
   const [searchResult, setSearchResult] = useState<Video[] | null>(null);
 
   useEffect(() => {

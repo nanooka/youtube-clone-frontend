@@ -51,7 +51,7 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
           user.subscriptions.map(
             async (subscription: { channelID: string }) => {
               const response = await fetch(
-                `http://localhost:3000/api/youtube/channels/${subscription.channelID}`
+                `http://localhost:5000/api/youtube/channels/${subscription.channelID}`
               );
               const data = await response.json();
               const channelInfo = data.items[0]?.snippet;
