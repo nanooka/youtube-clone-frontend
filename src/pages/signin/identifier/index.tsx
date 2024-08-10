@@ -122,9 +122,9 @@ export default function SignIn() {
               marginTop: "40px",
             }}
           >
-            {/* <Link href={"/"}> */}
-            <button className="btn create-btn">Create account</button>
-            {/* </Link> */}
+            <Link href={"/signup/name"}>
+              <button className="btn create-btn">Create account</button>
+            </Link>
             {/* <Link href={"/"}> */}
             <button className="btn next-btn" onClick={handleNextClick}>
               Next

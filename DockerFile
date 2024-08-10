@@ -1,25 +1,25 @@
 # Dockerfile for Next.js frontend
 
 # Step 1: Use a Node.js base image
-FROM node:18-alpine
+# FROM node:18-alpine
 
 # Step 2: Set the working directory inside the container
-WORKDIR /app
+# WORKDIR /app
 
 # Step 3: Copy package.json and package-lock.json
-COPY package*.json ./
+# COPY package*.json ./
 
 # Step 4: Install dependencies
-RUN npm install
+# RUN npm install
 
 # Step 5: Copy the rest of the application code
-COPY . .
+# COPY . .
 
 # Step 6: Build the application
-RUN npm run build
+# RUN npm run build
 
 # Step 7: Expose the port that the app runs on
-EXPOSE 3000
+# EXPOSE 3000
 
 # Step 8: Start the application
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
