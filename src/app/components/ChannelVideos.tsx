@@ -34,6 +34,12 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({
     fetchChannelVideos(orderVideo);
   }, [channelId, orderVideo]);
 
+  const isVideoIdObject = (
+    id: string | { videoId: string }
+  ): id is { videoId: string } => {
+    return typeof id === "object" && id !== null && "videoId" in id;
+  };
+
   return (
     <div style={{ marginTop: "30px" }}>
       {channelVideos && channelVideos.length > 0 ? (
@@ -84,7 +90,7 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({
       >
         {channelVideos?.map((video) => (
           <div
-            key={video.id.videoId}
+            key={isVideoIdObject(video.id) ? video.id.videoId : video.id} // Use video.id.videoId safely here
             style={{ cursor: "pointer", maxWidth: "300px" }}
             onClick={() => handleVideoClick(video)}
           >

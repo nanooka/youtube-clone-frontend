@@ -86,61 +86,75 @@ export default function WatchPage({ searchResults }: watchProps) {
   //
   console.log("logindata", loginData);
 
-  const hydrate = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/youtube/videos/${v}?${apiKey}&part="snippet,statistics,player,contentDetails"`
-      );
-      setVideoInfo(response.data.items[0]);
-    } catch (error) {
-      console.error("Error searching YouTube:", error);
+  useEffect(() => {
+    const hydrate = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/youtube/videos/${v}?${apiKey}&part="snippet,statistics,player,contentDetails"`
+        );
+        setVideoInfo(response.data.items[0]);
+      } catch (error) {
+        console.error("Error searching YouTube:", error);
+      }
+    };
+    if (v) {
+      hydrate();
     }
-  };
+  }, [apiKey, v]);
+
   // console.log("channelId", channelId);
   console.log("videoInfo", videoInfo);
 
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/youtube/comments/${v}`
-      );
-      setComments(response.data.items);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  };
-
-  // console.log("comments ", comments);
-
-  // useEffect(() => {
-  const fetchChannel = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/api/youtube/channels/${channelId}?${apiKey}&part="snippet,id,statistics,player,contentDetails"`
-      );
-      // console.log("response", response.data.items[0]);
-      setChannelInfo(response.data.items[0]);
-    } catch (error) {
-      console.error("Error searching YouTube:", error);
-    }
-  };
-  //   fetch();
-  // }, [channelId]);
-
-  // console.log(formatSubscriberCount("10000000"));
-
   useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/youtube/comments/${v}`
+        );
+        setComments(response.data.items);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
     if (v) {
-      hydrate();
       fetchComments();
     }
   }, [v]);
 
+  // console.log("comments ", comments);
+
   useEffect(() => {
+    const fetchChannel = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/youtube/channels/${channelId}?${apiKey}&part="snippet,id,statistics,player,contentDetails"`
+        );
+        // console.log("response", response.data.items[0]);
+        setChannelInfo(response.data.items[0]);
+      } catch (error) {
+        console.error("Error searching YouTube:", error);
+      }
+    };
+    // fetchChannel();
     if (v && channelId) {
       fetchChannel();
     }
-  }, [v, channelId]);
+  }, [apiKey, channelId, v]);
+
+  // console.log(formatSubscriberCount("10000000"));
+
+  // useEffect(() => {
+  //   if (v) {
+  //     hydrate();
+  //     fetchComments();
+  //   }
+  // }, [v]);
+
+  // useEffect(() => {
+  //   if (v && channelId) {
+  //     fetchChannel();
+  //   }
+  // }, [v, channelId, fetchChannel]);
 
   // console.log("channelInfo", channelInfo);
 

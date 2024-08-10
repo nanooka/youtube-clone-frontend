@@ -117,7 +117,7 @@ export default function ChannelPage() {
     };
 
     fetchChannel();
-  }, [channelId]);
+  }, [apiKey, channelId]);
 
   const handleVideoClick = (video: Video) => {
     router.push({
