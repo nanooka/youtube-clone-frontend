@@ -43,19 +43,24 @@ export default function PasswordStep() {
       return;
     }
 
-    setFormData((prevFormData) => ({
-      ...prevFormData,
+    // setFormData((prevFormData) => ({
+    //   ...prevFormData,
+    //   password,
+    // }));
+
+    const updatedFormData = {
+      ...formData,
       password,
-    }));
+    };
 
     // nextStep();
     try {
-      const response = await fetch("http://localhost:5000/users", {
+      const response = await fetch("http://localhost:8080/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(updatedFormData),
       });
 
       if (response.ok) {

@@ -155,7 +155,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const fetchChannelInfo = async (channelId: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/youtube/channels/${channelId}?${apiKey}&part=snippet`
+        `http://localhost:8080/api/youtube/channels/${channelId}?${apiKey}&part=snippet`
       );
       // console.log("new", response.data.items[0]);
       return response.data.items[0];
@@ -168,7 +168,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const fetchVideoInfo = async (videoId: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/youtube/videos/${videoId}?${apiKey}&part=snippet,statistics,player,contentDetails`
+        `http://localhost:8080/api/youtube/videos/${videoId}?${apiKey}&part=snippet,statistics,player,contentDetails`
       );
       return response.data.items[0];
     } catch (error) {

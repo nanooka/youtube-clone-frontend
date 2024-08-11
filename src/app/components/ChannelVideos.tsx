@@ -16,7 +16,7 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({
   channelId,
   handleVideoClick,
 }) => {
-  const apiUrl = "http://localhost:5000/api/youtube";
+  const apiUrl = "http://localhost:8080/api/youtube";
   const [orderVideo, setOrderVideo] = useState<string>("date");
   const [channelVideos, setChannelVideos] = useState<Video[] | null>(null);
 

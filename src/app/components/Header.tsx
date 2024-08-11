@@ -153,7 +153,7 @@ export default function Header({ onSearchResults, toggleSidebar }: Props) {
               cursor: "pointer",
             }}
           >
-            {/* {loginData?.email.split("")[0].toUpperCase()} */}N
+            {loginData?.email.split("")[0].toUpperCase()}
           </div>
         )}
       </header>

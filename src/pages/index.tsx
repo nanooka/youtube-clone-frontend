@@ -1,140 +1,3 @@
-// "use client";
-
-// import React, { useEffect, useState } from "react";
-// import Image from "next/image";
-// import { useRouter } from "next/router";
-// import { formatViewCount } from "@/app/formulas/formatViewCount";
-// import { dateCalculation } from "@/app/formulas/dateCalculation";
-// import { ExtendedVideo } from "@/app/types/types";
-// import { convertDuration } from "@/app/formulas/formatDuration";
-// import Link from "next/link";
-// import NavbarVideoTypes from "@/app/components/NavbarVideoTypes";
-// import axios from "axios";
-// import Spinner from "@/app/components/Spinner";
-// import { MdOutlineWatchLater } from "react-icons/md";
-
-// interface HomeProps {
-//   searchResults: ExtendedVideo[];
-// }
-
-// function isVideoIdObject(
-//   id: string | { videoId: string }
-// ): id is { videoId: string } {
-//   return (id as { videoId: string }).videoId !== undefined;
-// }
-
-// export default function Home({ searchResults }: HomeProps) {
-//   const apiKey = process.env.apiKey;
-//   const [randomVideos, setRandomVideos] = useState<ExtendedVideo[]>([]);
-//   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
-//   const [loading, setLoading] = useState<boolean>(false);
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     const fetchRandomVideos = async () => {
-//       try {
-//         const response = await axios.get(
-//           `http://localhost:5000/api/youtube/search`
-//         );
-//         setNextPageToken(response.data.nextPageToken);
-//         await handleRandomVideos(response.data.items);
-//       } catch (error) {
-//         console.error("Failed to fetch random videos", error);
-//       }
-//     };
-
-//     if (searchResults.length === 0) {
-//       fetchRandomVideos();
-//     } else {
-//       setRandomVideos(searchResults);
-//     }
-//   }, [searchResults]);
-
-//   const handleRandomVideos = async (results: ExtendedVideo[]) => {
-//     const updatedResults = await Promise.all(
-//       results.map(async (video) => {
-//         const [channelInfo, videoInfo] = await Promise.all([
-//           fetchChannelInfo(video.snippet.channelId),
-//           fetchVideoInfo(
-//             isVideoIdObject(video.id) ? video.id.videoId : video.id
-//           ),
-//         ]);
-//         return {
-//           ...video,
-//           ...videoInfo,
-//           channelImageUrl: channelInfo?.snippet?.thumbnails?.default?.url || "",
-//         };
-//       })
-//     );
-//     setRandomVideos((prev) => [...prev, ...updatedResults]);
-//   };
-
-//   const fetchChannelInfo = async (channelId: string) => {
-//     try {
-//       const response = await axios.get(
-//         `http://localhost:5000/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
-//       );
-//       return response.data.items[0];
-//     } catch (error) {
-//       console.error("Error fetching channel info:", error);
-//       return null;
-//     }
-//   };
-
-//   const fetchVideoInfo = async (videoId: string) => {
-//     try {
-//       const response = await axios.get(
-//         `http://localhost:5000/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
-//       );
-//       return response.data.items[0];
-//     } catch (error) {
-//       console.error("Error fetching video info:", error);
-//       return null;
-//     }
-//   };
-
-//   const handleVideoClick = (video: ExtendedVideo) => {
-//     router.push({
-//       pathname: `/watch/${video.id}`,
-//     });
-//   };
-
-//   const loadMoreVideos = async () => {
-//     if (!nextPageToken || loading) return;
-
-//     setLoading(true);
-
-//     try {
-//       const response = await axios.get(
-//         `http://localhost:5000/api/youtube/search`,
-//         {
-//           params: { pageToken: nextPageToken },
-//         }
-//       );
-//       setNextPageToken(response.data.nextPageToken);
-//       await handleRandomVideos(response.data.items);
-//     } catch (error) {
-//       console.error("Failed to load more videos", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       if (
-//         window.innerHeight + window.scrollY >=
-//           document.body.offsetHeight - 500 &&
-//         !loading
-//       ) {
-//         loadMoreVideos();
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, [nextPageToken, loading]);
-
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
@@ -171,7 +34,7 @@ export default function Home({ searchResults }: HomeProps) {
     async (channelId: string) => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
+          `http://localhost:8080/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
         );
         return response.data.items[0];
       } catch (error) {
@@ -186,7 +49,7 @@ export default function Home({ searchResults }: HomeProps) {
     async (videoId: string) => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
+          `http://localhost:8080/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
         );
         return response.data.items[0];
       } catch (error) {
@@ -227,7 +90,7 @@ export default function Home({ searchResults }: HomeProps) {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/youtube/search`,
+        `http://localhost:8080/api/youtube/search`,
         {
           params: { pageToken: nextPageToken },
         }
@@ -245,7 +108,7 @@ export default function Home({ searchResults }: HomeProps) {
     const fetchRandomVideos = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/youtube/search`
+          `http://localhost:8080/api/youtube/search`
         );
         setNextPageToken(response.data.nextPageToken);
         await handleRandomVideos(response.data.items);

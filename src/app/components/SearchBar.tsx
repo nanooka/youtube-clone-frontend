@@ -13,7 +13,7 @@ export default function SearchBar({ onSearchResults }: Props) {
   const hydrate = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/youtube/search?query=${encodeURIComponent(
+        `http://localhost:8080/api/youtube/search?query=${encodeURIComponent(
           searchQuery
         )}`
       );

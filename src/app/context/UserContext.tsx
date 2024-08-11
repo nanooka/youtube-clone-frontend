@@ -66,7 +66,7 @@
 
 //   const fetchUser = async (id: string) => {
 //     try {
-//       const response = await fetch(`http://localhost:5000/users/${id}`);
+//       const response = await fetch(`http://localhost:8080/users/${id}`);
 //       if (!response.ok) {
 //         throw new Error(`HTTP error! status: ${response.status}`);
 //       }
@@ -87,7 +87,7 @@
 //         Authorization: `Bearer ${loginData.token}`,
 //       };
 //       const response = await fetch(
-//         `http://localhost:5000/liked-videos/user-liked-videos`,
+//         `http://localhost:8080/liked-videos/user-liked-videos`,
 //         {
 //           method: "POST",
 //           headers: headers,
@@ -114,7 +114,7 @@
 //         Authorization: `Bearer ${loginData.token}`,
 //       };
 //       const response = await fetch(
-//         `http://localhost:5000/watch-later-videos/user-watch-later-videos`,
+//         `http://localhost:8080/watch-later-videos/user-watch-later-videos`,
 //         {
 //           method: "POST",
 //           headers: headers,
@@ -143,7 +143,7 @@
 //         Authorization: `Bearer ${loginData.token}`,
 //       };
 //       const response = await fetch(
-//         `http://localhost:5000/subscriptions/user-subscriptions`,
+//         `http://localhost:8080/subscriptions/user-subscriptions`,
 //         {
 //           method: "POST",
 //           headers: headers,
@@ -252,7 +252,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUser = useCallback(async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/users/${id}`);
+      const response = await fetch(`http://localhost:8080/users/${id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -273,7 +273,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         Authorization: `Bearer ${loginData.token}`,
       };
       const response = await fetch(
-        `http://localhost:5000/liked-videos/user-liked-videos`,
+        `http://localhost:8080/liked-videos/user-liked-videos`,
         {
           method: "POST",
           headers: headers,
@@ -300,7 +300,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         Authorization: `Bearer ${loginData.token}`,
       };
       const response = await fetch(
-        `http://localhost:5000/watch-later-videos/user-watch-later-videos`,
+        `http://localhost:8080/watch-later-videos/user-watch-later-videos`,
         {
           method: "POST",
           headers: headers,
@@ -329,7 +329,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         Authorization: `Bearer ${loginData.token}`,
       };
       const response = await fetch(
-        `http://localhost:5000/subscriptions/user-subscriptions`,
+        `http://localhost:8080/subscriptions/user-subscriptions`,
         {
           method: "POST",
           headers: headers,

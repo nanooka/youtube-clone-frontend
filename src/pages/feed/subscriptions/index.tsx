@@ -17,7 +17,7 @@ const apiKey = process.env.apiKey;
 const fetchChannelInfo = async (channelId: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:5000/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
+      `http://localhost:8080/api/youtube/channels/${channelId}?key=${apiKey}&part=snippet`
     );
     console.log("Channel Info Response:", response.data);
     return response.data.items[0];
@@ -30,7 +30,7 @@ const fetchChannelInfo = async (channelId: string) => {
 const fetchVideoInfo = async (videoId: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:5000/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
+      `http://localhost:8080/api/youtube/videos/${videoId}?key=${apiKey}&part=snippet,statistics,player,contentDetails`
     );
     return response.data;
   } catch (error) {
@@ -58,7 +58,7 @@ export default function Subscriptions() {
           const allVideos = await Promise.all(
             user.subscriptions.map(async (sub) => {
               const response = await axios.get<{ items: Video[] }>(
-                `http://localhost:5000/api/youtube/channel-videos/${sub.channelID}`
+                `http://localhost:8080/api/youtube/channel-videos/${sub.channelID}`
               );
               return response.data.items;
             })

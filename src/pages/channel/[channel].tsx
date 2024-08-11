@@ -19,7 +19,7 @@ import Link from "next/link";
 import { useUser } from "@/app/context/UserContext";
 
 export default function ChannelPage() {
-  const apiUrl = "http://localhost:5000/api/youtube";
+  const apiUrl = "http://localhost:8080/api/youtube";
   const apiKey = process.env.apiKey;
   const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
@@ -187,7 +187,7 @@ export default function ChannelPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${loginData.token}`,
         };
-        const response = await fetch("http://localhost:5000/subscriptions", {
+        const response = await fetch("http://localhost:8080/subscriptions", {
           method: "POST",
           headers: headers,
           body: JSON.stringify(requestData),
@@ -215,7 +215,7 @@ export default function ChannelPage() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${loginData.token}`,
       };
-      const response = await fetch("http://localhost:5000/subscriptions", {
+      const response = await fetch("http://localhost:8080/subscriptions", {
         method: "DELETE",
         headers: headers,
         body: JSON.stringify(requestData),

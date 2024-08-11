@@ -10,7 +10,7 @@ interface ChannelPlaylistsProps {
 }
 
 const ChannelPlaylists: React.FC<ChannelPlaylistsProps> = ({ channelId }) => {
-  const apiUrl = "http://localhost:5000/api/youtube";
+  const apiUrl = "http://localhost:8080/api/youtube";
   const [channelPlaylists, setChannelPlaylists] = useState<Playlist[] | null>(
     null
   );
